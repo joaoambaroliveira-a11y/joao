@@ -1,94 +1,35 @@
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+.lista-container {
+    margin-top: 20px;
+    max-width: 800px; /* Aumentamos um pouco a largura para a tabela */
 }
 
-body {
-    background-color: #f4f7f6;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-.container {
-    background-color: #fff;
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+table {
     width: 100%;
-    max-width: 500px;
+    border-collapse: collapse;
+    margin-top: 15px;
 }
 
-h2 {
-    color: #333;
-    margin-bottom: 10px;
-}
-
-p {
-    color: #777;
-    margin-bottom: 30px;
-    font-size: 0.9rem;
-}
-
-.input-group {
-    margin-bottom: 20px;
-}
-
-.input-group label {
-    display: block;
-    margin-bottom: 8px;
-    color: #555;
-    font-weight: 600;
-}
-
-.input-group input {
-    width: 100%;
+th, td {
+    text-align: left;
     padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s;
+    border-bottom: 1px solid #eee;
 }
 
-.input-group input:focus {
-    border-color: #4A90E2;
+th {
+    background-color: #f8f9fa;
+    color: #333;
 }
 
-/* Coloca telefone e CPF lado a lado em telas maiores */
-.row {
-    display: flex;
-    gap: 15px;
-}
-
-.row .input-group {
-    flex: 1;
-}
-
-.btn-enviar {
-    width: 100%;
-    padding: 15px;
-    background-color: #4A90E2;
+.btn-excluir {
+    background-color: #ff4d4d;
     color: white;
     border: none;
-    border-radius: 5px;
-    font-size: 1rem;
-    font-weight: bold;
+    padding: 5px 10px;
+    border-radius: 3px;
     cursor: pointer;
-    transition: background 0.3s;
+    font-size: 0.8rem;
 }
 
-.btn-enviar:hover {
-    background-color: #357ABD;
-}
-
-/* Responsividade para celulares */
-@media (max-width: 480px) {
-    .row {
-        flex-direction: column;
-        gap: 0;
-    }
+.btn-excluir:hover {
+    background-color: #cc0000;
 }
