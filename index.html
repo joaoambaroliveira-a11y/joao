@@ -1,14 +1,27 @@
 <div class="container lista-container">
     <h3>Clientes Cadastrados</h3>
+    
+    <div class="search-group">
+        <input type="text" id="busca" placeholder="Buscar cliente por nome..." onkeyup="filtrarClientes()">
+    </div>
+
     <table id="tabela-clientes">
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th>E-mail</th>
-                <th>Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            </tbody>
-    </table>
-</div>
+        ```
+
+---
+
+### 2. Estilização da Busca no CSS (`style.css`)
+Adicione este pequeno ajuste para o campo de busca não ficar colado na tabela:
+
+```css
+.search-group {
+    margin: 15px 0;
+}
+
+#busca {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 0.9rem;
+}
