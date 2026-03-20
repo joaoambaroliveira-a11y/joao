@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login do Sistema</title>
+    <title>Login - Sistema de Gestão</title>
     <style>
+        /* Reset de Estilos */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
@@ -17,101 +18,101 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #0f172a; /* Azul escuro profissional */
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
         }
 
-        .login-card {
-            background: #ffffff;
+        .login-container {
+            background-color: #ffffff;
             padding: 40px;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 380px;
+            max-width: 400px;
             text-align: center;
         }
 
         h2 {
-            color: #1e293b;
-            margin-bottom: 8px;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
         }
 
         p {
-            color: #64748b;
+            color: #666;
+            margin-bottom: 30px;
             font-size: 0.9rem;
-            margin-bottom: 25px;
         }
 
         .input-group {
             text-align: left;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
 
         label {
             display: block;
-            margin-bottom: 6px;
+            margin-bottom: 8px;
+            color: #444;
             font-weight: 600;
-            color: #334155;
         }
 
         input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #ccc;
             border-radius: 6px;
             outline: none;
-            transition: 0.3s;
+            transition: border-color 0.3s;
         }
 
         input:focus {
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            border-color: #2a5298;
         }
 
         .btn-login {
             width: 100%;
             padding: 12px;
-            background-color: #2563eb;
+            background-color: #2a5298;
             color: white;
             border: none;
             border-radius: 6px;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
+            transition: background 0.3s;
         }
 
         .btn-login:hover {
-            background-color: #1d4ed8;
+            background-color: #1e3c72;
         }
 
-        #erro {
-            color: #ef4444;
-            background: #fef2f2;
+        .error-msg {
+            color: #d9534f;
+            background-color: #f2dede;
             padding: 10px;
-            border-radius: 6px;
-            margin-bottom: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: none; /* Escondido por padrão */
             font-size: 0.85rem;
-            display: none; /* Invisível por padrão */
         }
     </style>
 </head>
 <body>
 
-    <div class="login-card">
-        <h2>Acesso</h2>
-        <p>Entre com suas credenciais</p>
+    <div class="login-container">
+        <h2>Acesso ao Sistema</h2>
+        <p>Insira suas credenciais para continuar</p>
 
-        <div id="erro">Usuário ou senha inválidos!</div>
+        <div id="error" class="error-msg">Usuário ou senha incorretos!</div>
 
-        <form id="formLogin">
+        <form id="loginForm">
             <div class="input-group">
-                <label for="usuario">Usuário</label>
-                <input type="text" id="usuario" placeholder="admin" required>
+                <label for="username">Usuário</label>
+                <input type="text" id="username" placeholder="Ex: admin" required>
             </div>
 
             <div class="input-group">
-                <label for="senha">Senha</label>
-                <input type="password" id="senha" placeholder="••••••" required>
+                <label for="password">Senha</label>
+                <input type="password" id="password" placeholder="••••••••" required>
             </div>
 
             <button type="submit" class="btn-login">Entrar</button>
@@ -119,21 +120,20 @@
     </div>
 
     <script>
-        document.getElementById('formLogin').addEventListener('submit', function(e) {
-            e.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o recarregamento da página
 
-            const user = document.getElementById('usuario').value;
-            const pass = document.getElementById('senha').value;
-            const msgErro = document.getElementById('erro');
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            const errorDisplay = document.getElementById('error');
 
-            // Credenciais padrão
+            // Validação simples (Usuário: admin / Senha: 123)
             if (user === "admin" && pass === "123") {
-                // Aqui ele tenta abrir o arquivo de cadastro
-                window.location.href = "cadastro.html";
+                // Redireciona para a tela de cadastro
+                window.location.href = "cadastro.html"; 
             } else {
-                msgErro.style.display = "block";
-                // Limpa o campo de senha se errar
-                document.getElementById('senha').value = "";
+                // Mostra mensagem de erro
+                errorDisplay.style.display = "block";
             }
         });
     </script>
