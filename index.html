@@ -1,19 +1,53 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-<style>
-  body {
-    margin: 0;
-    height: 100vh;
-    /* Cria um gradiente do preto para o azul escuro */
-    background: linear-gradient(135deg, #000000 0%, #001f3f 100%);
-    color: white; /* Cor do texto para dar leitura */
-    font-family: sans-serif;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundo Azul e Preto</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: white;
+            /* O segredo do fundo está aqui: */
+            background: radial-gradient(circle, #001d3d 0%, #000814 100%);
+            background-attachment: fixed;
+        }
+
+        .container {
+            text-align: center;
+            padding: 2rem;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            font-size: 3rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            /* Um leve brilho azul no texto */
+            text-shadow: 0 0 15px #0077b6;
+        }
+    </style>
 </head>
 <body>
-  <h1>Fundo Azul e Preto</h1>
-  <p>Este é um exemplo de gradiente usando CSS.</p>
+
+    <div class="container">
+        <h1>Design Azul & Preto</h1>
+        <p>Estilo elegante com CSS Moderno.</p>
+    </div>
+
 </body>
 </html>
