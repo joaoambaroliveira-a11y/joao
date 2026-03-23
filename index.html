@@ -3,125 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Design Neon Azul e Preto</title>
+    <title>Login do Sistema</title>
     <style>
-        /* Reset de estilos */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', sans-serif;
         }
 
         body {
-            /* Fundo preto profundo com um destaque neon azul no centro */
-            background-color: #000000;
-            background-image: radial-gradient(circle at center, #001d3d 0%, #000000 70%);
             height: 100vh;
             display: flex;
-            flex-direction: column;
-            color: white;
-            overflow: hidden;
-        }
-
-        /* Menu com transparência */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 25px 8%;
-            background: rgba(0, 0, 0, 0.5);
-            border-bottom: 1px solid #00d4ff33;
-        }
-
-        .logo {
-            font-size: 22px;
-            font-weight: bold;
-            color: #00d4ff;
-            text-shadow: 0 0 10px #00d4ff; /* Brilho neon no logo */
-        }
-
-        nav a {
-            color: white;
-            text-decoration: none;
-            margin-left: 20px;
-            transition: 0.3s;
-        }
-
-        nav a:hover {
-            color: #00d4ff;
-        }
-
-        /* Conteúdo Principal */
-        .container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
+            background: #0f172a; /* Azul escuro profissional */
+        }
+
+        .login-card {
+            background: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 380px;
             text-align: center;
         }
 
-        h1 {
-            font-size: 3.5rem;
-            margin-bottom: 10px;
-            color: white;
-            /* Texto com sombra neon azul */
-            text-shadow: 0 0 20px #00d4ff, 0 0 40px #0051ff;
+        h2 {
+            color: #1e293b;
+            margin-bottom: 8px;
         }
 
         p {
-            color: #a0a0a0;
-            margin-bottom: 30px;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-bottom: 25px;
         }
 
-        /* O BOTÃO NEON COM LINK */
-        .link-botao {
-            text-decoration: none;
+        .input-group {
+            text-align: left;
+            margin-bottom: 18px;
         }
 
-        .btn-neon {
-            background: transparent;
-            color: #00d4ff;
-            border: 2px solid #00d4ff;
-            padding: 15px 40px;
-            font-size: 1.1rem;
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 12px;
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
             font-weight: bold;
-            text-transform: uppercase;
-            border-radius: 5px;
             cursor: pointer;
-            transition: all 0.4s;
-            /* Brilho externo do botão */
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
+            transition: 0.2s;
         }
 
-        .btn-neon:hover {
-            background: #00d4ff;
-            color: #000;
-            /* Aumento do brilho no hover */
-            box-shadow: 0 0 30px #00d4ff, 0 0 60px #00d4ff;
-            transform: scale(1.05);
+        .btn-login:hover {
+            background-color: #1d4ed8;
+        }
+
+        #erro {
+            color: #ef4444;
+            background: #fef2f2;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            font-size: 0.85rem;
+            display: none; /* Invisível por padrão */
         }
     </style>
 </head>
 <body>
 
-    <nav>
-        <div class="logo">PORTAL NEON</div>
-        <div>
-            <a href="#">Início</a>
-            <a href="#">Sobre</a>
-            <a href="#">Contato</a>
-        </div>
-    </nav>
+    <div class="login-card">
+        <h2>Acesso</h2>
+        <p>Entre com suas credenciais</p>
 
-    <div class="container">
-        <h1>DESTAQUE AZUL</h1>
-        <p>A união perfeita entre a escuridão e a luz neon.</p>
+        <div id="erro">Usuário ou senha inválidos!</div>
 
-        <a href="https://www.google.com.br" target="_blank" class="link-botao">
-            <button class="btn-neon">Começar Agora</button>
-        </a>
+        <form id="formLogin">
+            <div class="input-group">
+                <label for="usuario">Usuário</label>
+                <input type="text" id="usuario" placeholder="admin" required>
+            </div>
+
+            <div class="input-group">
+                <label for="senha">Senha</label>
+                <input type="password" id="senha" placeholder="••••••" required>
+            </div>
+
+            <button type="submit" class="btn-login">Entrar</button>
+        </form>
     </div>
+a
+    <script>
+        document.getElementById('formLogin').addEventListener('submit', function(e) {
+            e.preventDefault();
 
+            const user = document.getElementById('usuario').value;
+            const pass = document.getElementById('senha').value;
+            const msgErro = document.getElementById('erro');
+
+            // Credenciais padrão
+            if (user === "admin" && pass === "123") {
+                // Aqui ele tenta abrir o arquivo de cadastro
+                window.location.href = "cadastro.html";
+            } else {
+                msgErro.style.display = "block";
+                // Limpa o campo de senha se errar
+                document.getElementById('senha').value = "";
+            }
+        });
+    </script>
 </body>
 </html>
