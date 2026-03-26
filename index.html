@@ -3,50 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cadastro - Mentalidade Predestinada</title>
+    <title>Cadastro Espacial</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
         body {
-            background: radial-gradient(circle at center, #001d3d 0%, #000000 100%);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            color: white;
-            overflow: hidden;
+            /* Substitua a URL abaixo pela sua imagem de preferência */
+            background: url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?auto=format&fit=crop&w=1920&q=80') no-repeat center center fixed;
+            background-size: cover;
         }
 
-        .cadastro-card {
-            background: rgba(0, 8, 20, 0.8);
-            padding: 40px;
+        .cadastro-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 20px;
-            border: 1px solid #00d4ff;
-            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
-            width: 100%;
-            max-width: 400px;
+            padding: 40px;
+            width: 380px;
             text-align: center;
-            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
         }
 
         h2 {
-            font-size: 2rem;
-            margin-bottom: 10px;
-            color: #00d4ff;
-            text-shadow: 0 0 10px #00d4ff;
+            color: #fff;
+            margin-bottom: 30px;
             text-transform: uppercase;
             letter-spacing: 2px;
-        }
-
-        p {
-            color: #888;
-            margin-bottom: 30px;
-            font-size: 0.9rem;
+            font-weight: 300;
         }
 
         .input-group {
@@ -54,95 +47,82 @@
             text-align: left;
         }
 
-        label {
+        .input-group label {
             display: block;
-            margin-bottom: 8px;
-            color: #00d4ff;
-            font-size: 0.75rem;
-            font-weight: bold;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
+            font-size: 14px;
         }
 
-        input {
+        .input-group input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px;
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid #333;
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
             color: white;
             outline: none;
             transition: 0.3s;
         }
 
-        input:focus {
-            border-color: #00d4ff;
-            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        .input-group input:focus {
+            border-color: #00d2ff;
+            background: rgba(255, 255, 255, 0.1);
         }
 
-        .btn-submit {
+        button {
             width: 100%;
             padding: 15px;
-            background: transparent;
-            color: #00d4ff;
-            border: 2px solid #00d4ff;
-            border-radius: 8px;
-            font-size: 1rem;
-            font-weight: bold;
-            text-transform: uppercase;
-            cursor: pointer;
-            transition: 0.4s;
             margin-top: 10px;
-            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+            border: none;
+            border-radius: 30px;
+            background: linear-gradient(45deg, #00d2ff, #3a7bd5);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
 
-        .btn-submit:hover {
-            background: #00d4ff;
-            color: #000;
-            box-shadow: 0 0 30px #00d4ff;
-            transform: translateY(-3px);
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 210, 255, 0.4);
+        }
+
+        .footer-links {
+            margin-top: 20px;
+            color: #ccc;
+            font-size: 13px;
+        }
+
+        .footer-links a {
+            color: #00d2ff;
+            text-decoration: none;
         }
     </style>
 </head>
 <body>
 
-    <div class="cadastro-card">
-        <h2>Predestinado</h2>
-        <p>Assuma o controle da sua rotina agora.</p>
-
-        <form id="formCadastro">
+    <div class="cadastro-container">
+        <h2>Cadastre-se</h2>
+        <form>
             <div class="input-group">
-                <label>NOME COMPLETO</label>
-                <input type="text" id="nome" placeholder="Digite seu nome..." required>
+                <label>Nome de Usuário</label>
+                <input type="text" placeholder="Ex: Astronauta77">
             </div>
-
             <div class="input-group">
-                <label>E-MAIL</label>
-                <input type="email" id="email" placeholder="seu@email.com" required>
+                <label>E-mail</label>
+                <input type="email" placeholder="seu@email.com">
             </div>
-
             <div class="input-group">
-                <label>SENHA</label>
-                <input type="password" id="senha" placeholder="••••••••" required>
+                <label>Senha</label>
+                <input type="password" placeholder="••••••••">
             </div>
-
-            <button type="submit" class="btn-submit">Acessar Minha Rotina</button>
+            <button type="submit">CRIAR CONTA</button>
         </form>
+        <div class="footer-links">
+            Já tem uma conta? <a href="#">Faça login</a>
+        </div>
     </div>
-
-    <script>
-        document.getElementById('formCadastro').addEventListener('submit', function(event) {
-            // Impede o recarregamento padrão da página
-            event.preventDefault();
-
-            // URL corrigida
-            const urlDestino = "https://www.jw.org/pt/biblioteca/revistas/g200902/Seu-futuro-foi-predestinado/";
-
-            // Simulação de salvamento (opcional)
-            console.log("Dados validados. Redirecionando...");
-
-            // Redireciona o usuário para o link
-            window.location.href = urlDestino;
-        });
-    </script>
 
 </body>
 </html>
