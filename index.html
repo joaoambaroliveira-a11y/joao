@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SisVenda - Sistema de Vendas</title>
+    <title>SisVenda - Sistema de Vendas com Cadastro</title>
     <style>
         :root {
             --primary-color: #2c3e50;
+            --secondary-color: #34495e;
             --success-color: #27ae60;
             --danger-color: #e74c3c;
             --light-bg: #f5f6fa;
@@ -29,10 +30,7 @@
             align-items: center;
         }
 
-        /* Utilidades */
-        .hidden {
-            display: none !important;
-        }
+        .hidden { display: none !important; }
 
         /* --- TELA DE LOGIN --- */
         .login-container {
@@ -60,17 +58,12 @@
             font-weight: 600;
         }
 
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 0.75rem;
             border: 1px solid #ccc;
             border-radius: 4px;
             font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary-color);
         }
 
         .btn {
@@ -86,283 +79,4 @@
             transition: background 0.2s;
         }
 
-        .btn:hover {
-            background-color: #1a252f;
-        }
-
-        .btn-success { background-color: var(--success-color); }
-        .btn-success:hover { background-color: #219653; }
-
-        .error-msg {
-            color: var(--danger-color);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            text-align: center;
-        }
-
-        /* --- TELA PRINCIPAL (SISVENDA) --- */
-        .main-container {
-            width: 100%;
-            height: 100vh;
-            display: grid;
-            grid-template-rows: 60px 1fr;
-        }
-
-        header {
-            background-color: var(--primary-color);
-            color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 2rem;
-        }
-
-        .logout-btn {
-            background: transparent;
-            border: 1px solid white;
-            color: white;
-            padding: 0.4rem 1rem;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            background: white;
-            color: var(--primary-color);
-        }
-
-        .content {
-            display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 1.5rem;
-            padding: 1.5rem;
-            overflow: hidden;
-        }
-
-        .panel {
-            background: white;
-            border-radius: 8px;
-            padding: 1.5rem;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .panel h3 {
-            margin-bottom: 1rem;
-            border-bottom: 2px solid var(--light-bg);
-            padding-bottom: 0.5rem;
-        }
-
-        /* Tabela de Produtos / Carrinho */
-        .table-wrapper {
-            flex: 1;
-            overflow-y: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            text-align: left;
-        }
-
-        th, td {
-            padding: 0.75rem;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background-color: var(--light-bg);
-        }
-
-        .product-row:hover {
-            background-color: #f9f9f9;
-            cursor: pointer;
-        }
-
-        /* Cupom Fiscal / Total */
-        .cart-total {
-            margin-top: auto;
-            font-size: 1.5rem;
-            font-weight: bold;
-            text-align: right;
-            padding-top: 1rem;
-            border-top: 2px dashed #ccc;
-        }
-    </style>
-</head>
-<body>
-
-    <div id="login-screen" class="login-container">
-        <h2>SisVenda - Login</h2>
-        <form id="login-form" onsubmit="handleLogin(event)">
-            <div class="form-group">
-                <label for="username">Usuário</label>
-                <input type="text" id="username" value="admin" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Senha</label>
-                <input type="password" id="password" value="1234" required>
-            </div>
-            <button type="submit" class="btn">Entrar no Sistema</button>
-            <div id="login-error" class="error-msg hidden">Usuário ou senha incorretos!</div>
-        </form>
-    </div>
-
-    <div id="main-screen" class="main-container hidden">
-        <header>
-            <h2>SisVenda v1.0</h2>
-            <div>
-                <span style="margin-right: 1rem;">Operador: <strong>Admin</strong></span>
-                <button class="logout-btn" onclick="handleLogout()">Sair</button>
-            </div>
-        </header>
-
-        <div class="content">
-            <div class="panel">
-                <h3>Produtos (Clique para vender)</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Código</th>
-                                <th>Descrição</th>
-                                <th>Preço Unitário</th>
-                            </tr>
-                        </thead>
-                        <tbody id="products-table">
-                            </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="panel">
-                <h3>Cupom Fiscal</h3>
-                <div class="table-wrapper">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Qtd</th>
-                                <th>Total</th>
-                            </tr>
-                        </thead>
-                        <tbody id="cart-table">
-                            </tbody>
-                    </table>
-                </div>
-                <div class="cart-total">
-                    Total: R$ <span id="total-value">0,00</span>
-                </div>
-                <button class="btn btn-success" style="margin-top: 1rem;" onclick="finalizeSale()">Finalizar Venda</button>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Dados Simulados de Produtos
-        const productsList = [
-            { id: 101, name: "Arroz 5kg", price: 24.90 },
-            { id: 102, name: "Feijão Preto 1kg", price: 7.50 },
-            { id: 103, name: "Óleo de Soja", price: 6.80 },
-            { id: 104, name: "Açúcar Refinado 1kg", price: 4.20 },
-            { id: 105, name: "Café Torrado 500g", price: 14.90 },
-            { id: 106, name: "Leite Integral 1L", price: 4.80 }
-        ];
-
-        let cart = [];
-
-        // Inicializar tabela de produtos ao carregar
-        function initProducts() {
-            const tbody = document.getElementById('products-table');
-            tbody.innerHTML = '';
-            productsList.forEach(prod => {
-                const row = document.createElement('tr');
-                row.className = 'product-row';
-                row.onclick = () => addToCart(prod);
-                row.innerHTML = `
-                    <td>#${prod.id}</td>
-                    <td>${prod.name}</td>
-                    <td>R$ ${prod.price.toFixed(2).replace('.', ',')}</td>
-                `;
-                tbody.appendChild(row);
-            });
-        }
-
-        // Controle de Login (Simples para demonstração)
-        function handleLogin(event) {
-            event.preventDefault();
-            const user = document.getElementById('username').value;
-            const pass = document.getElementById('password').value;
-            const errorMsg = document.getElementById('login-error');
-
-            // Usuário padrão: admin / Senha: 1234
-            if (user === 'admin' && pass === '1234') {
-                errorMsg.classList.add('hidden');
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('main-screen').classList.remove('hidden');
-                
-                // Mudar o background do body para o layout do sistema
-                document.body.style.alignItems = 'stretch';
-                
-                initProducts();
-            } else {
-                errorMsg.classList.remove('hidden');
-            }
-        }
-
-        // Controle de Logout
-        function handleLogout() {
-            document.getElementById('main-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
-            document.body.style.alignItems = 'center';
-            cart = [];
-            updateCartUI();
-        }
-
-        // Adicionar item ao Carrinho
-        function addToCart(product) {
-            const existingItem = cart.find(item => item.id === product.id);
-            if (existingItem) {
-                existingItem.quantity += 1;
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            updateCartUI();
-        }
-
-        // Atualizar a interface do Carrinho e Total
-        function updateCartUI() {
-            const tbody = document.getElementById('cart-table');
-            tbody.innerHTML = '';
-            let total = 0;
-
-            cart.forEach(item => {
-                const itemTotal = item.price * item.quantity;
-                total += itemTotal;
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td>${item.name}</td>
-                    <td>${item.quantity}x</td>
-                    <td>R$ ${itemTotal.toFixed(2).replace('.', ',')}</td>
-                `;
-                tbody.appendChild(row);
-            });
-
-            document.getElementById('total-value').innerText = total.toFixed(2).replace('.', ',');
-        }
-
-        // Finalizar Venda
-        function finalizeSale() {
-            if (cart.length === 0) {
-                alert("O carrinho está vazio!");
-                return;
-            }
-            alert("Venda finalizada com sucesso!");
-            cart = [];
-            updateCartUI();
-        }
-    </script>
-</body>
-</html>
+        .btn:hover { background-color: #1a252f; }
