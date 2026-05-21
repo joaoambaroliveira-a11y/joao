@@ -1,79 +1,105 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de Produtos</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        .container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .produto-card {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            width: 200px;
-            padding: 15px;
-            text-align: center;
-        }
-        .produto-card img {
-            max-width: 100%;
-            height: 150px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-        .produto-card h3 {
-            color: #555;
-            font-size: 1.1rem;
-            margin: 10px 0 0 0;
-        }
-    </style>
-</head>
-<body>
+import random
+import time
+import os
 
-    <h1>Produtos da Cesta Básica</h1>
+# Emojis do Tigrão
+emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"]
 
-    <div class="container">
-        <div class="produto-card">
-            <img src="https://images.unsplash.com/photo-1586201375761-83865001e31c?w=400" alt="Arroz">
-            <h3>Arroz</h3>
-        </div>
+def limpar_tela():
+    os.system('cls' if os.name == 'nt' else 'clear')
 
-        <div class="produto-card">
-            <img src="https://images.unsplash.com/photo-1551462147-ff29053bfc14?w=400" alt="Feijão">
-            <h3>Feijão</h3>
-        </div>
+def jogo_do_tigrao():
+    print("🐅 BEM-VINDO AO JOGO DO TIGRÃO 🐅")
+    print("=" * 50)
+    
+    banca = 10000.0  # Banca da casa
+    saldo_jogador = 500.0  # Saldo inicial do jogador
+    
+    aposta = 10.0  # Aposta inicial
+    
+    print(f"Banca da casa: R$ {banca:,.2f}")
+    print(f"Seu saldo: R$ {saldo_jogador:,.2f}")
+    print(f"Aposta inicial: R$ {aposta:.2f} (sobe de 10 em 10)\n")
+    
+    while True:
+        limpar_tela()
+        print("🐅 JOGO DO TIGRÃO 🐅")
+        print("=" * 50)
+        print(f"Banca da casa: R$ {banca:,.2f}")
+        print(f"Seu saldo: R$ {saldo_jogador:,.2f}")
+        print(f"Aposta atual: R$ {aposta:.2f}\n")
+        
+        if saldo_jogador < aposta:
+            print("❌ Saldo insuficiente para continuar!")
+            break
+        
+        opcao = input("Pressione ENTER para girar (ou 's' para sair, 'a' para alterar aposta): ").strip().lower()
+        
+        if opcao == 's':
+            break
+        elif opcao == 'a':
+            try:
+                nova_aposta = float(input(f"Digite a nova aposta (múltiplo de 10, mínimo 10): "))
+                if nova_aposta >= 10 and nova_aposta % 10 == 0 and nova_aposta <= saldo_jogador:
+                    aposta = nova_aposta
+                    print(f"✅ Aposta alterada para R$ {aposta:.2f}")
+                    time.sleep(1.5)
+                    continue
+                else:
+                    print("❌ Valor inválido!")
+                    time.sleep(1.5)
+                    continue
+            except:
+                print("❌ Entrada inválida!")
+                time.sleep(1.5)
+                continue
+        
+        # Gira o jogo
+        print("\nGirando os emojis... 🌀")
+        time.sleep(1.5)
+        
+        # Gera 3 emojis aleatórios
+        resultado = random.choices(emojis, k=3)
+        
+        print("\n" + "═" * 30)
+        print(f"   {resultado[0]}   {resultado[1]}   {resultado[2]}   ")
+        print("═" * 30 + "\n")
+        
+        # Verifica se tem Tigrão
+        tigrao_count = resultado.count("🐅")
+        
+        # Pagamento aleatório entre 100 e 1000
+        ganho = random.randint(100, 1000)
+        
+        if tigrao_count >= 1:
+            print(f"🎉 TIGRAÇO APARECEU! Você ganhou R$ {ganho:.2f}!")
+            saldo_jogador += ganho
+            banca -= ganho
+            
+            # Aumenta a aposta automaticamente após vitória
+            if aposta < 200:
+                aposta += 10
+                print(f"🔥 Aposta subiu para R$ {aposta:.2f}")
+        else:
+            print("😢 Sem Tigrão... Você perdeu a aposta.")
+            saldo_jogador -= aposta
+            banca += aposta
+        
+        # Verifica fim de jogo
+        if banca <= 0:
+            print("🏆 Você quebrou a banca! Parabéns!")
+            break
+        if saldo_jogador <= 0:
+            print("💸 Você ficou sem saldo. Fim de jogo!")
+            break
+        
+        input("\nPressione ENTER para continuar...")
+    
+    print("\n" + "="*50)
+    print(f"Fim de jogo!")
+    print(f"Seu saldo final: R$ {saldo_jogador:,.2f}")
+    print(f"Banca final: R$ {banca:,.2f}")
+    print("🐅 Obrigado por jogar no Tigrão!")
 
-        <div class="produto-card">
-            <img src="https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=400" alt="Óleo de Soja">
-            <h3>Óleo de Soja</h3>
-        </div>
-
-        <div class="produto-card">
-            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=400" alt="Café">
-            <h3>Café</h3>
-        </div>
-
-        <div class="produto-card">
-            <img src="https://images.unsplash.com/photo-1550583724-b2692b85b150?w=400" alt="Leite">
-            <h3>Leite</h3>
-        </div>
-    </div>
-
-</body>
-</html>
+if __name__ == "__main__":
+    jogo_do_tigrao()
