@@ -1,82 +1,148 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SisVenda - Sistema de Vendas com Cadastro</title>
+    <title>Cadastro - Mentalidade Predestinada</title>
     <style>
-        :root {
-            --primary-color: #2c3e50;
-            --secondary-color: #34495e;
-            --success-color: #27ae60;
-            --danger-color: #e74c3c;
-            --light-bg: #f5f6fa;
-            --dark-text: #2c3e50;
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
         }
 
         body {
-            background-color: var(--light-bg);
-            color: var(--dark-text);
+            background: radial-gradient(circle at center, #001d3d 0%, #000000 100%);
             height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            color: white;
+            overflow: hidden;
         }
 
-        .hidden { display: none !important; }
-
-        /* --- TELA DE LOGIN --- */
-        .login-container {
-            background: white;
-            padding: 2.5rem;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        .cadastro-card {
+            background: rgba(0, 8, 20, 0.8);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid #00d4ff;
+            box-shadow: 0 0 30px rgba(0, 212, 255, 0.2);
             width: 100%;
             max-width: 400px;
-        }
-
-        .login-container h2 {
             text-align: center;
-            margin-bottom: 1.5rem;
-            color: var(--primary-color);
+            backdrop-filter: blur(10px);
         }
 
-        .form-group {
-            margin-bottom: 1.2rem;
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+            color: #00d4ff;
+            text-shadow: 0 0 10px #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        .form-group label {
+        p {
+            color: #888;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        label {
             display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .form-group input, .form-group select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
+            margin-bottom: 8px;
+            color: #00d4ff;
+            font-size: 0.75rem;
             font-weight: bold;
-            transition: background 0.2s;
         }
 
-        .btn:hover { background-color: #1a252f; }
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid #333;
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            border-color: #00d4ff;
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            color: #00d4ff;
+            border: 2px solid #00d4ff;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: 0.4s;
+            margin-top: 10px;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-submit:hover {
+            background: #00d4ff;
+            color: #000;
+            box-shadow: 0 0 30px #00d4ff;
+            transform: translateY(-3px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cadastro-card">
+        <h2>Predestinado</h2>
+        <p>Assuma o controle da sua rotina agora.</p>
+
+        <form id="formCadastro">
+            <div class="input-group">
+                <label>NOME COMPLETO</label>
+                <input type="text" id="nome" placeholder="Digite seu nome..." required>
+            </div>
+
+            <div class="input-group">
+                <label>E-MAIL</label>
+                <input type="email" id="email" placeholder="seu@email.com" required>
+            </div>
+
+            <div class="input-group">
+                <label>SENHA</label>
+                <input type="password" id="senha" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn-submit">Acessar Minha Rotina</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('formCadastro').addEventListener('submit', function(event) {
+            // Impede o recarregamento padrão da página
+            event.preventDefault();
+
+            // URL corrigida
+            const urlDestino = "https://www.jw.org/pt/biblioteca/revistas/g200902/Seu-futuro-foi-predestinado/";
+
+            // Simulação de salvamento (opcional)
+            console.log("Dados validados. Redirecionando...");
+
+            // Redireciona o usuário para o link
+            window.location.href = urlDestino;
+        });
+    </script>
+
+</body>
+</html>
