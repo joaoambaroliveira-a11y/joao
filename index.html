@@ -1,105 +1,297 @@
-import random
-import time
-import os
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🐅 JOGO DO TIGRÃO 🐅</title>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-# Emojis do Tigrão
-emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"]
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(135deg, #0f0c0a, #3a1f0f);
+        color: #ffd700;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 10px;
+    }
 
-def limpar_tela():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    .container {
+        width: 100%;
+        max-width: 420px;
+        background: #1a1108;
+        border: 8px solid #d4a017;
+        border-radius: 25px;
+        overflow: hidden;
+        box-shadow: 0 0 40px rgba(212, 160, 23, 0.8);
+    }
 
-def jogo_do_tigrao():
-    print("🐅 BEM-VINDO AO JOGO DO TIGRÃO 🐅")
-    print("=" * 50)
-    
-    banca = 10000.0  # Banca da casa
-    saldo_jogador = 500.0  # Saldo inicial do jogador
-    
-    aposta = 10.0  # Aposta inicial
-    
-    print(f"Banca da casa: R$ {banca:,.2f}")
-    print(f"Seu saldo: R$ {saldo_jogador:,.2f}")
-    print(f"Aposta inicial: R$ {aposta:.2f} (sobe de 10 em 10)\n")
-    
-    while True:
-        limpar_tela()
-        print("🐅 JOGO DO TIGRÃO 🐅")
-        print("=" * 50)
-        print(f"Banca da casa: R$ {banca:,.2f}")
-        print(f"Seu saldo: R$ {saldo_jogador:,.2f}")
-        print(f"Aposta atual: R$ {aposta:.2f}\n")
-        
-        if saldo_jogador < aposta:
-            print("❌ Saldo insuficiente para continuar!")
-            break
-        
-        opcao = input("Pressione ENTER para girar (ou 's' para sair, 'a' para alterar aposta): ").strip().lower()
-        
-        if opcao == 's':
-            break
-        elif opcao == 'a':
-            try:
-                nova_aposta = float(input(f"Digite a nova aposta (múltiplo de 10, mínimo 10): "))
-                if nova_aposta >= 10 and nova_aposta % 10 == 0 and nova_aposta <= saldo_jogador:
-                    aposta = nova_aposta
-                    print(f"✅ Aposta alterada para R$ {aposta:.2f}")
-                    time.sleep(1.5)
-                    continue
-                else:
-                    print("❌ Valor inválido!")
-                    time.sleep(1.5)
-                    continue
-            except:
-                print("❌ Entrada inválida!")
-                time.sleep(1.5)
-                continue
-        
-        # Gira o jogo
-        print("\nGirando os emojis... 🌀")
-        time.sleep(1.5)
-        
-        # Gera 3 emojis aleatórios
-        resultado = random.choices(emojis, k=3)
-        
-        print("\n" + "═" * 30)
-        print(f"   {resultado[0]}   {resultado[1]}   {resultado[2]}   ")
-        print("═" * 30 + "\n")
-        
-        # Verifica se tem Tigrão
-        tigrao_count = resultado.count("🐅")
-        
-        # Pagamento aleatório entre 100 e 1000
-        ganho = random.randint(100, 1000)
-        
-        if tigrao_count >= 1:
-            print(f"🎉 TIGRAÇO APARECEU! Você ganhou R$ {ganho:.2f}!")
-            saldo_jogador += ganho
-            banca -= ganho
-            
-            # Aumenta a aposta automaticamente após vitória
-            if aposta < 200:
-                aposta += 10
-                print(f"🔥 Aposta subiu para R$ {aposta:.2f}")
-        else:
-            print("😢 Sem Tigrão... Você perdeu a aposta.")
-            saldo_jogador -= aposta
-            banca += aposta
-        
-        # Verifica fim de jogo
-        if banca <= 0:
-            print("🏆 Você quebrou a banca! Parabéns!")
-            break
-        if saldo_jogador <= 0:
-            print("💸 Você ficou sem saldo. Fim de jogo!")
-            break
-        
-        input("\nPressione ENTER para continuar...")
-    
-    print("\n" + "="*50)
-    print(f"Fim de jogo!")
-    print(f"Seu saldo final: R$ {saldo_jogador:,.2f}")
-    print(f"Banca final: R$ {banca:,.2f}")
-    print("🐅 Obrigado por jogar no Tigrão!")
+    .header {
+        background: linear-gradient(#b8860b, #8b5a00);
+        padding: 20px;
+        text-align: center;
+        border-bottom: 5px solid #ffd700;
+    }
 
-if __name__ == "__main__":
-    jogo_do_tigrao()
+    .header h1 {
+        font-size: 32px;
+        text-shadow: 0 0 15px #ff4500;
+    }
+
+    .reels {
+        background: #000;
+        padding: 25px 20px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        border-bottom: 5px solid #d4a017;
+    }
+
+    .reel {
+        width: 95px;
+        height: 115px;
+        background: #111;
+        border: 5px solid #ffd700;
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 58px;
+        box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
+        transition: all 0.4s;
+    }
+
+    .info {
+        padding: 15px 20px;
+        background: #2a1a0f;
+        text-align: center;
+    }
+
+    .balance, .bet {
+        font-size: 19px;
+        margin: 10px 0;
+        font-weight: bold;
+    }
+
+    .balance span, .bet span {
+        color: #00ff88;
+    }
+
+    .controls {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .btn {
+        padding: 15px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .spin-btn {
+        background: linear-gradient(#ff4500, #cc3700);
+        color: white;
+        font-size: 24px;
+        padding: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+    }
+
+    .spin-btn:active {
+        transform: scale(0.95);
+        box-shadow: 0 0 20px #ff4500;
+    }
+
+    .bet-controls {
+        display: flex;
+        gap: 10px;
+    }
+
+    .bet-btn {
+        background: #444;
+        color: #ffd700;
+        flex: 1;
+        font-size: 20px;
+    }
+
+    .result {
+        text-align: center;
+        font-size: 22px;
+        min-height: 35px;
+        margin-top: 10px;
+        font-weight: bold;
+    }
+
+    .spinning {
+        animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotateX(0deg); }
+        100% { transform: rotateX(360deg); }
+    }
+
+    .win {
+        color: #00ff00;
+        animation: winPulse 0.8s infinite;
+    }
+
+    @keyframes winPulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.08); }
+    }
+
+    .footer {
+        text-align: center;
+        padding: 12px;
+        font-size: 14px;
+        background: #0f0a05;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="header">
+      <h1>🐅 JOGO DO TIGRÃO 🐅</h1>
+    </div>
+
+    <div class="reels">
+      <div class="reel" id="reel1">🐅</div>
+      <div class="reel" id="reel2">🍒</div>
+      <div class="reel" id="reel3">⭐</div>
+    </div>
+
+    <div class="info">
+      <div class="balance">Saldo: R$ <span id="saldo">500.00</span></div>
+      <div class="bet">Aposta: R$ <span id="aposta">10.00</span></div>
+    </div>
+
+    <div class="controls">
+      <div class="bet-controls">
+        <button class="btn bet-btn" id="diminuir">− 10</button>
+        <button class="btn bet-btn" id="aumentar">+ 10</button>
+      </div>
+      <button class="btn spin-btn" id="spinBtn">🌀 GIRAR O TIGRÃO 🌀</button>
+      <div class="result" id="result"></div>
+    </div>
+
+    <div class="footer">
+      Banca da Casa: R$ <span id="banca">10000.00</span>
+    </div>
+  </div>
+
+  <script>
+    const emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"];
+
+    let saldo = 500;
+    let aposta = 10;
+    let banca = 10000;
+
+    const reel1 = document.getElementById('reel1');
+    const reel2 = document.getElementById('reel2');
+    const reel3 = document.getElementById('reel3');
+    const saldoEl = document.getElementById('saldo');
+    const apostaEl = document.getElementById('aposta');
+    const bancaEl = document.getElementById('banca');
+    const resultEl = document.getElementById('result');
+    const spinBtn = document.getElementById('spinBtn');
+
+    function atualizarTela() {
+      saldoEl.textContent = saldo.toFixed(2);
+      apostaEl.textContent = aposta.toFixed(2);
+      bancaEl.textContent = banca.toFixed(2);
+    }
+
+    function girarRolos() {
+      const reels = [reel1, reel2, reel3];
+      
+      reels.forEach(reel => reel.classList.add('spinning'));
+
+      setTimeout(() => {
+        const resultado = [
+          emojis[Math.floor(Math.random() * emojis.length)],
+          emojis[Math.floor(Math.random() * emojis.length)],
+          emojis[Math.floor(Math.random() * emojis.length)]
+        ];
+
+        reel1.textContent = resultado[0];
+        reel2.textContent = resultado[1];
+        reel3.textContent = resultado[2];
+
+        reels.forEach(reel => reel.classList.remove('spinning'));
+
+        verificarResultado(resultado);
+      }, 1600);
+    }
+
+    function verificarResultado(resultado) {
+      const temTigrao = resultado.includes("🐅");
+      
+      if (temTigrao) {
+        const ganho = Math.floor(Math.random() * 901) + 100; // 100 a 1000
+        saldo += ganho;
+        banca -= ganho;
+        resultEl.innerHTML = `🎉 TIGRAÇO! + R$ ${ganho}`;
+        resultEl.classList.add('win');
+
+        if (aposta < 200) aposta += 10;
+      } else {
+        saldo -= aposta;
+        banca += aposta;
+        resultEl.textContent = "😢 Sem Tigrão...";
+        resultEl.classList.remove('win');
+      }
+
+      atualizarTela();
+
+      if (saldo < aposta) {
+        setTimeout(() => {
+          alert("💸 Saldo insuficiente! Fim de jogo.");
+        }, 600);
+      }
+    }
+
+    // Botão Girar
+    spinBtn.addEventListener('click', () => {
+      if (saldo < aposta) {
+        alert("Saldo insuficiente para girar!");
+        return;
+      }
+      resultEl.textContent = "";
+      resultEl.classList.remove('win');
+      girarRolos();
+    });
+
+    // Aumentar / Diminuir aposta
+    document.getElementById('aumentar').addEventListener('click', () => {
+      if (aposta + 10 <= saldo) {
+        aposta += 10;
+        atualizarTela();
+      }
+    });
+
+    document.getElementById('diminuir').addEventListener('click', () => {
+      if (aposta > 10) {
+        aposta -= 10;
+        atualizarTela();
+      }
+    });
+
+    // Iniciar
+    atualizarTela();
+  </script>
+</body>
+</html>
