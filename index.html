@@ -5,11 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>🐅 JOGO DO TIGRÃO 🐅</title>
   <style>
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
     body {
         font-family: 'Arial', sans-serif;
@@ -80,9 +76,7 @@
         font-weight: bold;
     }
 
-    .balance span, .bet span {
-        color: #00ff88;
-    }
+    .balance span, .bet span { color: #00ff88; }
 
     .controls {
         padding: 20px;
@@ -107,19 +101,6 @@
         font-size: 24px;
         padding: 20px;
         text-transform: uppercase;
-        letter-spacing: 2px;
-    }
-
-    .bet-controls {
-        display: flex;
-        gap: 10px;
-    }
-
-    .bet-btn {
-        background: #444;
-        color: #ffd700;
-        flex: 1;
-        font-size: 20px;
     }
 
     .result {
@@ -130,72 +111,28 @@
         font-weight: bold;
     }
 
-    /* Animações */
-    .spinning {
-        animation: spin 0.7s linear infinite;
-    }
-
-    @keyframes spin {
-        0% { transform: rotateX(0deg); }
-        100% { transform: rotateX(360deg); }
-    }
-
-    /* Confetes */
-    .confetti {
+    /* Jackpot */
+    .jackpot {
         position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        z-index: 200;
-    }
-
-    /* Cartinha */
-    .cartinha {
-        position: absolute;
-        top: 45%;
+        top: 40%;
         left: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        background: linear-gradient(#fff, #f8e8c0);
-        color: #000;
-        width: 280px;
-        padding: 25px;
-        border: 5px solid #d4a017;
-        border-radius: 20px;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-        text-align: center;
-        z-index: 300;
-        animation: soltarCartinha 4.5s forwards;
-    }
-
-    .cartinha h2 {
-        color: #b8860b;
-        font-size: 24px;
-    }
-
-    .cartinha .premio {
-        font-size: 32px;
+        transform: translate(-50%, -50%);
+        font-size: 42px;
         font-weight: bold;
-        color: #00aa00;
-        margin: 15px 0;
+        color: #ff00ff;
+        text-shadow: 0 0 20px #ffff00, 0 0 40px #ff00ff;
+        animation: jackpotAnim 2s infinite;
+        z-index: 400;
+        pointer-events: none;
     }
 
-    @keyframes soltarCartinha {
-        0% { transform: translate(-50%, -120%) scale(0.2); opacity: 0; }
-        25% { transform: translate(-50%, -50%) scale(1.15); }
-        45% { transform: translate(-50%, -50%) scale(0.95); }
-        100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    @keyframes jackpotAnim {
+        0%, 100% { transform: translate(-50%, -50%) scale(1); }
+        50% { transform: translate(-50%, -50%) scale(1.15); }
     }
 
-    .win-flash {
-        animation: winFlash 0.6s 3;
-    }
-
-    @keyframes winFlash {
-        0%, 100% { background: #000; }
-        50% { background: #00ff00; }
-    }
+    .spinning { animation: spin 0.7s linear infinite; }
+    @keyframes spin { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(360deg); } }
   </style>
 </head>
 <body>
@@ -225,7 +162,7 @@
       <div class="result" id="result"></div>
     </div>
 
-    <div class="footer" style="text-align: center; padding: 12px; background: #0f0a05; font-size: 15px;">
+    <div style="text-align: center; padding: 12px; background: #0f0a05; font-size: 15px;">
       Banca da Casa: R$ <span id="banca">10000.00</span>
     </div>
   </div>
@@ -253,55 +190,73 @@
       bancaEl.textContent = banca.toFixed(2);
     }
 
-    // Animação de Confetes
-    function lancarConfetes() {
+    function lancarConfetes(quantidade = 80) {
       const confettiContainer = document.createElement('div');
-      confettiContainer.className = 'confetti';
+      confettiContainer.style.position = 'absolute';
+      confettiContainer.style.top = '0';
+      confettiContainer.style.left = '0';
+      confettiContainer.style.width = '100%';
+      confettiContainer.style.height = '100%';
+      confettiContainer.style.pointerEvents = 'none';
+      confettiContainer.style.zIndex = '200';
       container.appendChild(confettiContainer);
 
-      for (let i = 0; i < 80; i++) {
+      for (let i = 0; i < quantidade; i++) {
         const confete = document.createElement('div');
         confete.style.position = 'absolute';
-        confete.style.width = '10px';
-        confete.style.height = '10px';
+        confete.style.width = '12px';
+        confete.style.height = '12px';
         confete.style.borderRadius = '50%';
-        confete.style.backgroundColor = ['#ffd700', '#ff4500', '#00ff00', '#00ffff', '#ff00ff'][Math.floor(Math.random()*5)];
+        confete.style.backgroundColor = ['#ffd700', '#ff00ff', '#00ffff', '#ffff00', '#ff4500'][Math.floor(Math.random()*5)];
         confete.style.left = Math.random() * 100 + '%';
-        confete.style.top = '-10px';
-        confete.style.opacity = Math.random() + 0.5;
-        confete.style.transform = `rotate(${Math.random()*360}deg)`;
+        confete.style.top = '-20px';
         
         confettiContainer.appendChild(confete);
 
-        const duration = Math.random() * 3 + 2;
+        const duration = Math.random() * 3 + 3;
         confete.animate([
-          { transform: `translateY(0) rotate(0deg)`, opacity: 1 },
-          { transform: `translateY(${window.innerHeight}px) rotate(${Math.random()*800}deg)`, opacity: 0 }
-        ], {
-          duration: duration * 1000,
-          easing: 'cubic-bezier(0.25, 0.1, 0.25, 1)'
-        });
+          { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+          { transform: `translateY(${window.innerHeight + 100}px) rotate(${Math.random()*1200}deg)`, opacity: 0 }
+        ], { duration: duration * 1000 });
 
-        setTimeout(() => confete.remove(), duration * 1200);
+        setTimeout(() => confete.remove(), duration * 1100);
       }
-
-      setTimeout(() => confettiContainer.remove(), 5000);
+      setTimeout(() => confettiContainer.remove(), 6000);
     }
 
-    function mostrarCartinha(ganho) {
+    function mostrarJackpot(ganho) {
+      const jackpotText = document.createElement('div');
+      jackpotText.className = 'jackpot';
+      jackpotText.textContent = '💰 JACKPOT 💰';
+      container.appendChild(jackpotText);
+
+      setTimeout(() => jackpotText.remove(), 2800);
+    }
+
+    function mostrarCartinha(ganho, isJackpot = false) {
       const cartinha = document.createElement('div');
-      cartinha.className = 'cartinha';
-      cartinha.innerHTML = `
-        <h2>🎟️ TIGRAÇO PREMIADO 🎟️</h2>
-        <p style="margin:8px 0;">Parabéns! Você ganhou</p>
-        <div class="premio">R$ ${ganho}</div>
-      `;
+      cartinha.style.position = 'absolute';
+      cartinha.style.top = '45%';
+      cartinha.style.left = '50%';
+      cartinha.style.transform = 'translate(-50%, -50%) scale(0)';
+      cartinha.style.background = isJackpot ? 'linear-gradient(#ffd700, #b8860b)' : 'linear-gradient(#fff, #f8e8c0)';
+      cartinha.style.color = isJackpot ? '#000' : '#000';
+      cartinha.style.width = '290px';
+      cartinha.style.padding = '25px';
+      cartinha.style.border = '6px solid #fff';
+      cartinha.style.borderRadius = '20px';
+      cartinha.style.textAlign = 'center';
+      cartinha.style.boxShadow = '0 15px 40px rgba(0,0,0,0.9)';
+      cartinha.style.zIndex = '300';
+      cartinha.style.animation = 'soltarCartinha 4.5s forwards';
+
+      cartinha.innerHTML = isJackpot 
+        ? `<h2 style="color:#000; font-size:26px;">🔥 JACKPOT! 🔥</h2><p>Grande Prêmio!</p><div style="font-size:34px; font-weight:bold; color:#000;">R$ ${ganho}</div>`
+        : `<h2>🎟️ TIGRAÇO PREMIADO 🎟️</h2><p>Você ganhou</p><div style="font-size:32px; font-weight:bold; color:#006600;">R$ ${ganho}</div>`;
+
       container.appendChild(cartinha);
 
-      setTimeout(() => {
-        cartinha.style.opacity = '0';
-        setTimeout(() => cartinha.remove(), 1000);
-      }, 4200);
+      setTimeout(() => cartinha.remove(), 4500);
     }
 
     function girarRolos() {
@@ -309,43 +264,52 @@
       reels.forEach(reel => reel.classList.add('spinning'));
 
       setTimeout(() => {
-        const resultado = [
-          emojis[Math.floor(Math.random() * emojis.length)],
-          emojis[Math.floor(Math.random() * emojis.length)],
-          emojis[Math.floor(Math.random() * emojis.length)]
-        ];
+        const resultado = Array(3).fill().map(() => emojis[Math.floor(Math.random() * emojis.length)]);
 
         reel1.textContent = resultado[0];
         reel2.textContent = resultado[1];
         reel3.textContent = resultado[2];
 
         reels.forEach(reel => reel.classList.remove('spinning'));
-
         verificarResultado(resultado);
       }, 1600);
     }
 
     function verificarResultado(resultado) {
-      const temTigrao = resultado.includes("🐅");
-      
-      if (temTigrao) {
+      const tigres = resultado.filter(r => r === "🐅").length;
+
+      if (tigres === 3) {
+        // === JACKPOT ===
+        const ganho = Math.floor(Math.random() * 4001) + 2000; // 2000 a 6000
+        saldo += ganho;
+        banca -= ganho;
+
+        resultEl.innerHTML = `💰 JACKPOT!!! + R$ ${ganho}`;
+        resultEl.style.color = '#ffff00';
+
+        lancarConfetes(150);           // Muitos confetes
+        mostrarJackpot(ganho);
+        mostrarCartinha(ganho, true);
+
+      } else if (tigres >= 1) {
+        // Vitória normal
         const ganho = Math.floor(Math.random() * 901) + 100;
         saldo += ganho;
         banca -= ganho;
 
-        resultEl.innerHTML = `🎉 G A N H O U ! + R$ ${ganho}`;
-        resultEl.classList.add('win');
+        resultEl.innerHTML = `🎉 TIGRAÇO! + R$ ${ganho}`;
+        resultEl.style.color = '#00ff00';
 
-        // Animações de vitória
-        lancarConfetes();
-        mostrarCartinha(ganho);
+        lancarConfetes(80);
+        mostrarCartinha(ganho, false);
 
         if (aposta < 200) aposta += 10;
       } else {
+        // Perda
         saldo -= aposta;
         banca += aposta;
         resultEl.textContent = "😢 Sem Tigrão...";
-        resultEl.classList.remove('win');
+        resultEl.style.color = '#ff6666';
       }
 
       atualizarTela();
@@ -355,14 +319,12 @@
       }
     }
 
-    // Eventos
+    // Botões
     spinBtn.addEventListener('click', () => {
-      if (saldo < aposta) {
-        alert("Saldo insuficiente!");
-        return;
-      }
+      if (saldo < aposta) return alert("Saldo insuficiente!");
+      
       resultEl.textContent = "";
-      resultEl.classList.remove('win');
+      resultEl.style.color = '';
       girarRolos();
     });
 
