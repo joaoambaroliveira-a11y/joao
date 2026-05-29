@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌽 Colheita de Milho</title>
+    <title>🌽 Colheita de Milho - Plantar & Colher</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -15,25 +15,20 @@
             min-height: 100vh;
         }
         
-        h1 {
-            padding: 20px;
-            font-size: 3em;
-            text-shadow: 0 0 15px #ffeb3b;
-        }
+        h1 { padding: 20px; font-size: 2.8em; text-shadow: 0 0 15px #ffeb3b; }
         
         #hud {
-            font-size: 1.5em;
+            font-size: 1.4em;
             margin: 15px 0;
             display: flex;
             justify-content: center;
-            gap: 50px;
-            flex-wrap: wrap;
+            gap: 40px;
         }
         
         #game {
             width: 900px;
             height: 520px;
-            background: #2e6b3f url('https://i.ibb.co/0qY0zqY/farm-background.jpg') center/cover;
+            background: #2e6b3f;
             margin: 20px auto;
             position: relative;
             border: 12px solid #1e4a2b;
@@ -42,46 +37,28 @@
             box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
         
-        .corn {
+        .plot {
             position: absolute;
-            font-size: 60px;
+            width: 80px;
+            height: 80px;
+            background: rgba(255,255,255,0.1);
+            border: 3px dashed #ddd;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
             cursor: pointer;
             transition: all 0.3s;
-            user-select: none;
         }
         
-        .corn:hover { transform: scale(1.3); }
-        .corn.ready { animation: shake 0.6s infinite alternate; }
+        .plot:hover { background: rgba(255,255,255,0.2); transform: scale(1.08); }
+        .plot.planted { border-style: solid; background: rgba(46, 107, 63, 0.6); }
+        .plot.ready { animation: shake 0.6s infinite alternate; }
         
         @keyframes shake {
             from { transform: rotate(-8deg); }
             to { transform: rotate(8deg); }
-        }
-
-        /* Modal de Venda */
-        #sell-modal {
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        
-        #modal-content {
-            background: #1e4a2b;
-            padding: 30px;
-            border-radius: 20px;
-            text-align: center;
-            border: 6px solid #f4a261;
-            max-width: 400px;
-        }
-        
-        #modal-content img {
-            width: 180px;
-            margin: 15px 0;
         }
         
         button {
@@ -95,10 +72,7 @@
             cursor: pointer;
         }
         
-        button:hover {
-            background: #e76f51;
-            transform: translateY(-3px);
-        }
+        button:hover { background: #e76f51; }
     </style>
 </head>
 <body>
@@ -106,135 +80,115 @@
     <h1>🌽 Colheita de Milho 🌽</h1>
     
     <div id="hud">
-        <div>Milhos Colhidos: <strong id="score">0</strong></div>
-        <div>Dinheiro: <strong>R$ <span id="money">0</span></strong></div>
-        <div>Velocidade: <strong id="level">1</strong></div>
+        <div>Milhos: <strong id="score">0</strong></div>
+        <div>Dinheiro: <strong>R$ <span id="money">50</span></strong></div>
+        <div>Sementes: <strong id="seeds">15</strong></div>
     </div>
 
     <div id="game"></div>
 
     <div>
-        <button onclick="plantAll()">🌱 Plantar Todos</button>
-        <button onclick="sellAll()">💰 Vender Todos</button>
-        <button onclick="upgradeSpeed()">⚡ Melhorar Velocidade (R$ 80)</button>
-    </div>
-
-    <!-- Modal de Venda -->
-    <div id="sell-modal">
-        <div id="modal-content">
-            <h2>💰 Venda Realizada!</h2>
-            <img src="https://i.ibb.co/7tL7v3K/corn-sale.png" alt="Milho Vendido">
-            <p id="sell-text" style="font-size: 1.4em; margin: 15px 0;"></p>
-            <button onclick="closeModal()">Fechar</button>
-        </div>
+        <button onclick="buySeeds()">🌱 Comprar Sementes (R$ 20)</button>
+        <button onclick="resetGame()">🔄 Reiniciar Jogo</button>
     </div>
 
     <script>
         let score = 0;
-        let money = 120;
-        let growthSpeed = 3200;
-        let level = 1;
+        let money = 50;
+        let seeds = 15;
+        let growthSpeed = 2800;
 
         const game = document.getElementById('game');
         const scoreEl = document.getElementById('score');
         const moneyEl = document.getElementById('money');
-        const levelEl = document.getElementById('level');
-        const modal = document.getElementById('sell-modal');
-        const sellText = document.getElementById('sell-text');
+        const seedsEl = document.getElementById('seeds');
 
-        function createCorn() {
+        function createPlots() {
             game.innerHTML = '';
-            for (let i = 0; i < 22; i++) {
-                const corn = document.createElement('div');
-                corn.className = 'corn';
-                corn.textContent = '🌱';
-                corn.style.left = Math.random() * 88 + '%';
-                corn.style.top = Math.random() * 80 + '%';
-                corn.dataset.stage = '0';
+            
+            for (let i = 0; i < 18; i++) {
+                const plot = document.createElement('div');
+                plot.className = 'plot';
+                plot.style.left = Math.random() * 82 + '%';
+                plot.style.top = Math.random() * 78 + '%';
+                plot.dataset.stage = '0'; // 0 = vazio, 1 = plantado, 2 = pronto
                 
-                corn.addEventListener('click', () => harvest(corn));
-                game.appendChild(corn);
-                startGrowing(corn);
+                plot.addEventListener('click', () => handlePlotClick(plot));
+                game.appendChild(plot);
             }
         }
 
-        function startGrowing(corn) {
+        function handlePlotClick(plot) {
+            const stage = parseInt(plot.dataset.stage);
+            
+            if (stage === 0 && seeds > 0) {
+                // Plantar
+                plot.textContent = '🌱';
+                plot.classList.add('planted');
+                plot.dataset.stage = '1';
+                seeds--;
+                seedsEl.textContent = seeds;
+                startGrowing(plot);
+                
+            } else if (stage === 2) {
+                // Colher
+                score++;
+                money += 25;
+                scoreEl.textContent = score;
+                moneyEl.textContent = money;
+                
+                plot.style.transform = 'scale(0)';
+                
+                setTimeout(() => {
+                    plot.textContent = '';
+                    plot.classList.remove('planted', 'ready');
+                    plot.dataset.stage = '0';
+                    plot.style.transform = 'scale(1)';
+                }, 300);
+            }
+        }
+
+        function startGrowing(plot) {
             setTimeout(() => {
-                if (corn.dataset.stage === '0') {
-                    corn.textContent = '🌿';
-                    corn.dataset.stage = '1';
+                if (plot.dataset.stage === '1') {
+                    plot.textContent = '🌿';
                 }
-            }, growthSpeed * 0.55);
+            }, growthSpeed * 0.6);
 
             setTimeout(() => {
-                if (corn.dataset.stage === '1') {
-                    corn.textContent = '🌽';
-                    corn.dataset.stage = '2';
-                    corn.classList.add('ready');
+                if (plot.dataset.stage === '1') {
+                    plot.textContent = '🌽';
+                    plot.dataset.stage = '2';
+                    plot.classList.add('ready');
                 }
             }, growthSpeed);
         }
 
-        function harvest(corn) {
-            if (corn.dataset.stage === '2') {
-                score++;
-                money += 22;
-                scoreEl.textContent = score;
+        function buySeeds() {
+            if (money >= 20) {
+                money -= 20;
+                seeds += 8;
                 moneyEl.textContent = money;
-
-                corn.style.transform = 'scale(0)';
-                setTimeout(() => {
-                    corn.textContent = '🌱';
-                    corn.style.transform = 'scale(1)';
-                    corn.dataset.stage = '0';
-                    corn.classList.remove('ready');
-                    startGrowing(corn);
-                }, 350);
+                seedsEl.textContent = seeds;
+            } else {
+                alert("Você não tem dinheiro suficiente!");
             }
         }
 
-        function plantAll() {
-            document.querySelectorAll('.corn').forEach(corn => {
-                if (corn.dataset.stage === '0') startGrowing(corn);
-            });
-        }
-
-        function sellAll() {
-            if (score > 0) {
-                const total = score * 22;
-                money += total;
-                moneyEl.textContent = money;
-
-                // Mostra o modal com imagem
-                sellText.innerHTML = `Você vendeu <strong>${score}</strong> milhos<br>e ganhou <strong>R$ ${total}</strong>!`;
-                modal.style.display = 'flex';
-
+        function resetGame() {
+            if (confirm("Reiniciar o jogo?")) {
                 score = 0;
+                money = 50;
+                seeds = 15;
                 scoreEl.textContent = score;
-            } else {
-                alert("Você não tem milhos para vender!");
-            }
-        }
-
-        function closeModal() {
-            modal.style.display = 'none';
-        }
-
-        function upgradeSpeed() {
-            if (money >= 80) {
-                money -= 80;
                 moneyEl.textContent = money;
-                growthSpeed = Math.max(900, growthSpeed - 550);
-                level++;
-                levelEl.textContent = level;
-                alert('🚀 Velocidade de crescimento aumentada!');
-            } else {
-                alert('Dinheiro insuficiente!');
+                seedsEl.textContent = seeds;
+                createPlots();
             }
         }
 
-        // Iniciar jogo
-        window.onload = createCorn;
+        // Iniciar o jogo
+        window.onload = createPlots;
     </script>
 
 </body>
