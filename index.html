@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🥊 Arena de Luta</title>
+    <title>🥊 Luta 2 Jogadores</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,10 +32,10 @@
             position: absolute;
             font-size: 90px;
             bottom: 60px;
-            transition: all 0.15s;
+            transition: all 0.2s;
         }
-        #player { left: 120px; }
-        #enemy { right: 120px; transform: scaleX(-1); }
+        #player1 { left: 120px; }
+        #player2 { right: 120px; transform: scaleX(-1); }
 
         .health-bar {
             height: 30px;
@@ -48,31 +48,17 @@
         }
         .health {
             height: 100%;
-            background: linear-gradient(#4caf50, #8bc34a);
-            width: 100%;
             transition: width 0.4s;
         }
-        #enemy-health-bar .health {
-            background: linear-gradient(#f44336, #ff5722);
-        }
+        #p1-health-bar .health { background: linear-gradient(#4caf50, #8bc34a); }
+        #p2-health-bar .health { background: linear-gradient(#f44336, #ff5722); }
 
         #controls {
             margin: 20px;
+            font-size: 1.1em;
         }
-        button {
-            padding: 15px 22px;
-            margin: 6px;
-            font-size: 18px;
-            background: #c62828;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-        button:hover { background: #e53935; transform: scale(1.05); }
-
         #message {
-            font-size: 45px;
+            font-size: 42px;
             margin: 20px;
             font-weight: bold;
             min-height: 60px;
@@ -81,159 +67,134 @@
 </head>
 <body>
 
-    <h1>🥊 ARENA DE LUTA 🥊</h1>
+    <h1>🥊 LUTA 2 JOGADORES 🥊</h1>
 
-    <div class="health-bar">
-        <div class="health" id="player-health"></div>
-        <strong>JOGADOR</strong>
+    <div class="health-bar" id="p1-health-bar">
+        <div class="health" id="p1-health"></div>
+        <strong>JOGADOR 1 (Azul)</strong>
     </div>
 
     <div id="arena">
-        <div id="player" class="fighter">🥊</div>
-        <div id="enemy" class="fighter">🥊</div>
+        <div id="player1" class="fighter">🥊</div>
+        <div id="player2" class="fighter">🥊</div>
     </div>
 
-    <div class="health-bar" id="enemy-health-bar">
-        <div class="health" id="enemy-health"></div>
-        <strong>INIMIGO</strong>
+    <div class="health-bar" id="p2-health-bar">
+        <div class="health" id="p2-health"></div>
+        <strong>JOGADOR 2 (Vermelho)</strong>
     </div>
 
     <div id="controls">
-        <button onclick="punch()">👊 Soco Forte</button>
-        <button onclick="kick()">🦵 Chute Alto</button>
-        <button onclick="special()">🔥 Especial</button>
-        <button onclick="defend()">🛡️ Defender</button>
+        <p><strong>Jogador 1:</strong> A = Soco | S = Chute | D = Especial | F = Defender</p>
+        <p><strong>Jogador 2:</strong> J = Soco | K = Chute | L = Especial | ; = Defender</p>
         <button onclick="resetGame()">🔄 Novo Combate</button>
     </div>
 
     <div id="message"></div>
 
     <script>
-        let playerHP = 100;
-        let enemyHP = 100;
+        let p1HP = 100;
+        let p2HP = 100;
         let gameOver = false;
-        let defending = false;
+        let p1Defending = false;
+        let p2Defending = false;
 
-        const playerHealthEl = document.getElementById('player-health');
-        const enemyHealthEl = document.getElementById('enemy-health');
+        const p1HealthEl = document.getElementById('p1-health');
+        const p2HealthEl = document.getElementById('p2-health');
         const messageEl = document.getElementById('message');
-        const player = document.getElementById('player');
-        const enemy = document.getElementById('enemy');
+        const player1 = document.getElementById('player1');
+        const player2 = document.getElementById('player2');
 
         function updateHealth() {
-            playerHealthEl.style.width = playerHP + '%';
-            enemyHealthEl.style.width = enemyHP + '%';
+            p1HealthEl.style.width = p1HP + '%';
+            p2HealthEl.style.width = p2HP + '%';
         }
 
-        function punch() {
+        function attack(attacker, damage, isSpecial = false) {
             if (gameOver) return;
-            const damage = 22;
-            enemyHP -= damage;
-            if (enemyHP < 0) enemyHP = 0;
 
-            player.style.transform = 'translateX(70px)';
-            setTimeout(() => player.style.transform = 'translateX(0)', 180);
+            if (attacker === 1) {
+                p2HP -= damage;
+                if (p2HP < 0) p2HP = 0;
+                player1.style.transform = 'translateX(80px)';
+                setTimeout(() => player1.style.transform = 'translateX(0)', 180);
+                
+                if (isSpecial) {
+                    player1.textContent = '💥';
+                    setTimeout(() => player1.textContent = '🥊', 400);
+                }
+            } else {
+                p1HP -= damage;
+                if (p1HP < 0) p1HP = 0;
+                player2.style.transform = 'translateX(-80px)';
+                setTimeout(() => player2.style.transform = 'translateX(0)', 180);
+                
+                if (isSpecial) {
+                    player2.textContent = '💥';
+                    setTimeout(() => player2.textContent = '🥊', 400);
+                }
+            }
 
             updateHealth();
             checkWin();
-            if (!gameOver) setTimeout(enemyTurn, 600);
         }
 
-        function kick() {
+        function defend(player) {
             if (gameOver) return;
-            const damage = 28;
-            enemyHP -= damage;
-            if (enemyHP < 0) enemyHP = 0;
+            if (player === 1) p1Defending = true;
+            else p2Defending = true;
 
-            player.style.transform = 'translateX(60px)';
-            setTimeout(() => player.style.transform = 'translateX(0)', 250);
-
-            updateHealth();
-            checkWin();
-            if (!gameOver) setTimeout(enemyTurn, 700);
-        }
-
-        function special() {
-            if (gameOver) return;
-            const damage = 48;
-            enemyHP -= damage;
-            if (enemyHP < 0) enemyHP = 0;
-
-            player.textContent = '💥';
-            setTimeout(() => player.textContent = '🥊', 500);
-
-            updateHealth();
-            checkWin();
-            if (!gameOver) setTimeout(enemyTurn, 800);
-        }
-
-        function defend() {
-            if (gameOver) return;
-            defending = true;
-            player.textContent = '🛡️';
-            messageEl.textContent = "Defendendo...";
+            messageEl.textContent = `Jogador ${player} defendendo!`;
             
             setTimeout(() => {
-                defending = false;
-                player.textContent = '🥊';
-                messageEl.textContent = "";
-            }, 1200);
-        }
-
-        function enemyTurn() {
-            if (gameOver || playerHP <= 0) return;
-
-            const rand = Math.random();
-            let damage = 18;
-
-            if (rand < 0.4) {
-                // Soco inimigo
-                damage = 20;
-            } else if (rand < 0.7) {
-                // Chute inimigo
-                damage = 26;
-            } else {
-                // Especial inimigo
-                damage = 35;
-            }
-
-            if (defending) {
-                damage = Math.floor(damage * 0.4);
-                messageEl.textContent = "Defesa boa!";
-            }
-
-            playerHP -= damage;
-            if (playerHP < 0) playerHP = 0;
-
-            enemy.style.transform = 'translateX(-70px)';
-            setTimeout(() => enemy.style.transform = 'translateX(0)', 300);
-
-            updateHealth();
-            checkWin();
+                if (player === 1) p1Defending = false;
+                else p2Defending = false;
+                messageEl.textContent = '';
+            }, 1000);
         }
 
         function checkWin() {
-            if (playerHP <= 0) {
+            if (p1HP <= 0) {
                 gameOver = true;
-                messageEl.innerHTML = "💀 Você Perdeu...";
+                messageEl.innerHTML = "🏆 JOGADOR 2 VENCEU!";
                 messageEl.style.color = "#ff4444";
-            } else if (enemyHP <= 0) {
+            } else if (p2HP <= 0) {
                 gameOver = true;
-                messageEl.innerHTML = "🏆 VITÓRIA!";
+                messageEl.innerHTML = "🏆 JOGADOR 1 VENCEU!";
                 messageEl.style.color = "#4caf50";
             }
         }
 
         function resetGame() {
-            playerHP = 100;
-            enemyHP = 100;
+            p1HP = 100;
+            p2HP = 100;
             gameOver = false;
-            defending = false;
+            p1Defending = false;
+            p2Defending = false;
             messageEl.innerHTML = '';
-            player.textContent = '🥊';
-            enemy.textContent = '🥊';
+            player1.textContent = '🥊';
+            player2.textContent = '🥊';
             updateHealth();
         }
+
+        // Controles do Teclado
+        document.addEventListener('keydown', (e) => {
+            if (gameOver) return;
+
+            switch(e.key.toLowerCase()) {
+                // Jogador 1
+                case 'a': attack(1, 22); break;           // Soco
+                case 's': attack(1, 30); break;           // Chute
+                case 'd': attack(1, 48, true); break;     // Especial
+                case 'f': defend(1); break;               // Defender
+
+                // Jogador 2
+                case 'j': attack(2, 22); break;
+                case 'k': attack(2, 30); break;
+                case 'l': attack(2, 48, true); break;
+                case ';': defend(2); break;
+            }
+        });
 
         // Iniciar
         updateHealth();
