@@ -3,201 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🥊 BOXING ARENA - 2 Jogadores</title>
+    <title>Jogo de Luta HTML5</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #0a0a0a;
-            color: white;
-            text-align: center;
             margin: 0;
-            padding: 10px;
-        }
-        h1 {
-            color: #ff4444;
-            text-shadow: 0 0 15px #ff0000;
-            margin: 15px;
-        }
-        #arena {
-            width: 820px;
-            height: 420px;
-            background: linear-gradient(#1a1a1a, #333);
-            margin: 20px auto;
-            position: relative;
-            border: 10px solid #550000;
-            border-radius: 15px;
+            background: #111;
+            color: white;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
             overflow: hidden;
         }
-        .fighter {
-            position: absolute;
-            font-size: 95px;
-            bottom: 50px;
-            transition: all 0.2s;
-        }
-        #player1 { left: 110px; }
-        #player2 { right: 110px; transform: scaleX(-1); }
 
-        .health-bar {
-            height: 32px;
+        #instrucoes {
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 14px;
             background: #222;
-            width: 340px;
-            margin: 10px auto;
-            border: 4px solid #fff;
-            border-radius: 10px;
-            overflow: hidden;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #444;
         }
-        .health {
-            height: 100%;
-            transition: width 0.4s;
-        }
-        #p1-health-bar .health { background: linear-gradient(#2196f3, #03a9f4); }
-        #p2-health-bar .health { background: linear-gradient(#f44336, #ff5722); }
 
-        #controls {
-            margin: 20px;
-            font-size: 1.1em;
+        #container-jogo {
+            position: relative;
+            width: 800px;
+            height: 400px;
         }
-        #message {
-            font-size: 42px;
-            margin: 20px;
+
+        /* Barras de Vida */
+        .interface {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            z-index: 10;
+        }
+
+        .container-vida {
+            width: 300px;
+            height: 30px;
+            background-color: #555;
+            border: 3px solid #fff;
+            position: relative;
+        }
+
+        .barra-vida {
+            height: 100%;
+            background-color: #ff3333;
+            width: 100%;
+            transition: width 0.1s ease;
+        }
+
+        #vida-p2 {
+            float: right;
+        }
+
+        /* Tela do Jogo */
+        canvas {
+            background: linear-gradient(to bottom, #2c3e50, #000000);
+            border: 4px solid #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        #tela-fim {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 40px;
             font-weight: bold;
-            min-height: 60px;
+            color: #ff3333;
+            text-shadow: 2px 2px #000;
+            text-align: center;
+        }
+        
+        #botao-restart {
+            margin-top: 15px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #fff;
+            border: none;
+            font-family: inherit;
         }
     </style>
 </head>
 <body>
 
-    <h1>🥊 BOXING ARENA - 2 JOGADORES 🥊</h1>
-
-    <div class="health-bar" id="p1-health-bar">
-        <div class="health" id="p1-health"></div>
-        <strong>🔵 BOXEAODR AZUL</strong>
+    <div id="instrucoes">
+        <strong>Jogador 1 (Azul):</strong> A/D = Mover | ESPAÇO = Atacar <br>
+        <strong>Jogador 2 (Vermelho):</strong> Setas Esquerda/Direita = Mover | ENTER = Atacar
     </div>
 
-    <div id="arena">
-        <div id="player1" class="fighter">🥊</div>
-        <div id="player2" class="fighter">🥊</div>
-    </div>
+    <div id="container-jogo">
+        <div class="interface">
+            <div>
+                <div>JOGADOR 1</div>
+                <div class="container-vida"><div id="vida-p1" class="barra-vida"></div></div>
+            </div>
+            <div>
+                <div>JOGADOR 2</div>
+                <div class="container-vida"><div id="vida-p2" class="barra-vida"></div></div>
+            </div>
+        </div>
+        
+        <div id="tela-fim">
+            <span id="texto-vencedor"></span><br>
+            <button id="botao-restart" onclick="reiniciarJogo()">Jogar Novamente</button>
+        </div>
 
-    <div class="health-bar" id="p2-health-bar">
-        <div class="health" id="p2-health"></div>
-        <strong>🔴 BOXEAODR VERMELHO</strong>
+        <canvas id="canvasJogo" width="800" height="400"></canvas>
     </div>
-
-    <div id="controls">
-        <p><strong>Jogador 1 (Azul):</strong> A = Soco | S = Chute | D = Uppercut | F = Defender</p>
-        <p><strong>Jogador 2 (Vermelho):</strong> J = Soco | K = Chute | L = Uppercut | ; = Defender</p>
-        <button onclick="resetGame()">🔄 Novo Combate</button>
-    </div>
-
-    <div id="message"></div>
 
     <script>
-        let p1HP = 100;
-        let p2HP = 100;
-        let gameOver = false;
-        let p1Defending = false;
-        let p2Defending = false;
+        const canvas = document.getElementById('canvasJogo');
+        const ctx = canvas.getContext('2d');
 
-        const p1HealthEl = document.getElementById('p1-health');
-        const p2HealthEl = document.getElementById('p2-health');
-        const messageEl = document.getElementById('message');
-        const player1 = document.getElementById('player1');
-        const player2 = document.getElementById('player2');
+        // Configurações básicas
+        const gravidade = 0.6;
+        let jogoAtivo = true;
 
-        function updateHealth() {
-            p1HealthEl.style.width = p1HP + '%';
-            p2HealthEl.style.width = p2HP + '%';
-        }
-
-        function attack(attacker, damage, isSpecial = false) {
-            if (gameOver) return;
-
-            if (attacker === 1) {
-                p2HP -= damage;
-                if (p2HP < 0) p2HP = 0;
-                player1.style.transform = 'translateX(70px)';
-                setTimeout(() => player1.style.transform = 'translateX(0)', 180);
+        // Classes dos Lutadores
+        class Lutador {
+            constructor({ posicao, velocidade, cor, offsetAtalho }) {
+                this.posicao = posicao;
+                this.velocidade = velocidade;
+                this.width = 50;
+                this.height = 100;
+                this.cor = cor;
+                this.vida = 100;
                 
-                if (isSpecial) {
-                    player1.textContent = '💥';
-                    setTimeout(() => player1.textContent = '🥊', 450);
+                // Caixa de ataque
+                this.caixaAtaque = {
+                    posicao: { x: this.posicao.x, y: this.posicao.y },
+                    offsetAtalho: offsetAtalho,
+                    width: 100,
+                    height: 50
+                };
+                this.estaAtacando = false;
+            }
+
+            desenhar() {
+                // Desenha o personagem
+                ctx.fillStyle = this.cor;
+                ctx.fillRect(this.posicao.x, this.posicao.y, this.width, this.height);
+
+                // Desenha o ataque (se estiver atacando)
+                if (this.estaAtacando) {
+                    ctx.fillStyle = 'yellow';
+                    ctx.fillRect(
+                        this.caixaAtaque.posicao.x, 
+                        this.caixaAtaque.posicao.y, 
+                        this.caixaAtaque.width, 
+                        this.caixaAtaque.height
+                    );
                 }
-            } else {
-                p1HP -= damage;
-                if (p1HP < 0) p1HP = 0;
-                player2.style.transform = 'translateX(-70px)';
-                setTimeout(() => player2.style.transform = 'translateX(0)', 180);
+            }
+
+            atualizar() {
+                this.desenhar();
                 
-                if (isSpecial) {
-                    player2.textContent = '💥';
-                    setTimeout(() => player2.textContent = '🥊', 450);
+                // Atualiza posição da caixa de ataque baseada na direção do boneco
+                this.caixaAtaque.posicao.x = this.posicao.x + this.caixaAtaque.offsetAtalho.x;
+                this.caixaAtaque.posicao.y = this.posicao.y + 20;
+
+                // Movimento horizontal
+                this.posicao.x += this.velocidade.x;
+
+                // Limites da tela (paredes)
+                if (this.posicao.x < 0) this.posicao.x = 0;
+                if (this.posicao.x + this.width > canvas.width) this.posicao.x = canvas.width - this.width;
+
+                // Gravidade e chão
+                if (this.posicao.y + this.height + this.velocidade.y >= canvas.height - 20) {
+                    this.velocidade.y = 0;
+                    this.posicao.y = canvas.height - 20 - this.height; // Mantém no chão
+                } else {
+                    this.velocidade.y += gravidade;
+                }
+                this.posicao.y += this.velocidade.y;
+            }
+
+            atacar() {
+                if (!this.estaAtacando && jogoAtivo) {
+                    this.estaAtacando = true;
+                    setTimeout(() => {
+                        this.estaAtacando = false;
+                    }, 100); // O ataque dura 100 milissegundos
                 }
             }
-
-            updateHealth();
-            checkWin();
         }
 
-        function defend(player) {
-            if (gameOver) return;
-            if (player === 1) p1Defending = true;
-            else p2Defending = true;
-
-            messageEl.textContent = `Jogador ${player} defendendo!`;
-            
-            setTimeout(() => {
-                if (player === 1) p1Defending = false;
-                else p2Defending = false;
-                messageEl.textContent = '';
-            }, 1100);
-        }
-
-        function checkWin() {
-            if (p1HP <= 0) {
-                gameOver = true;
-                messageEl.innerHTML = "🏆 BOXEAODR VERMELHO VENCEU!";
-                messageEl.style.color = "#ff4444";
-            } else if (p2HP <= 0) {
-                gameOver = true;
-                messageEl.innerHTML = "🏆 BOXEAODR AZUL VENCEU!";
-                messageEl.style.color = "#4caf50";
-            }
-        }
-
-        function resetGame() {
-            p1HP = 100;
-            p2HP = 100;
-            gameOver = false;
-            p1Defending = false;
-            p2Defending = false;
-            messageEl.innerHTML = '';
-            player1.textContent = '🥊';
-            player2.textContent = '🥊';
-            updateHealth();
-        }
-
-        // Controles do Teclado
-        document.addEventListener('keydown', (e) => {
-            if (gameOver) return;
-
-            switch(e.key.toLowerCase()) {
-                // Jogador 1 (Azul)
-                case 'a': attack(1, 22); break;           // Soco
-                case 's': attack(1, 28); break;           // Chute
-                case 'd': attack(1, 50, true); break;     // Uppercut
-                case 'f': defend(1); break;               // Defender
-
-                // Jogador 2 (Vermelho)
-                case 'j': attack(2, 22); break;
-                case 'k': attack(2, 28); break;
-                case 'l': attack(2, 50, true); break;
-                case ';': defend(2); break;
-            }
+        // Criando os jogadores
+        let p1 = new Lutador({
+            posicao: { x: 150, y: 0 },
+            velocidade: { x: 0, y: 0 },
+            cor: '#3498db',
+            offsetAtalho: { x: 0, y: 0 }
         });
 
-        updateHealth();
-    </script>
+        let p2 = new Lutador({
+            posicao: { x: 600, y: 0 },
+            velocidade: { x: 0, y: 0 },
+            cor: '#e74c3c',
+            offsetAtalho: { x: -50, y: 0 } // Ataca para o lado esquerdo por padrão
+        });
 
-</body>
-</html>
+        // Controle de teclas pressionadas
+        const teclas = {
+            a: { pressionada: false },
+            d: { pressionada: false },
+            ArrowLeft: { pressionada: false },
+            ArrowRight: { pressionada: false }
+        };
+
+        // Detecção de colisão (Hitbox)
+        function colisaoQuadrados({ quad1, quad2 }) {
