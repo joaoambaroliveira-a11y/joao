@@ -57,6 +57,32 @@
             from { transform: rotate(-8deg); }
             to { transform: rotate(8deg); }
         }
+
+        /* Modal de Venda */
+        #sell-modal {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        #modal-content {
+            background: #1e4a2b;
+            padding: 30px;
+            border-radius: 20px;
+            text-align: center;
+            border: 6px solid #f4a261;
+            max-width: 400px;
+        }
+        
+        #modal-content img {
+            width: 180px;
+            margin: 15px 0;
+        }
         
         button {
             padding: 14px 24px;
@@ -93,6 +119,16 @@
         <button onclick="upgradeSpeed()">⚡ Melhorar Velocidade (R$ 80)</button>
     </div>
 
+    <!-- Modal de Venda -->
+    <div id="sell-modal">
+        <div id="modal-content">
+            <h2>💰 Venda Realizada!</h2>
+            <img src="https://i.ibb.co/7tL7v3K/corn-sale.png" alt="Milho Vendido">
+            <p id="sell-text" style="font-size: 1.4em; margin: 15px 0;"></p>
+            <button onclick="closeModal()">Fechar</button>
+        </div>
+    </div>
+
     <script>
         let score = 0;
         let money = 120;
@@ -103,10 +139,11 @@
         const scoreEl = document.getElementById('score');
         const moneyEl = document.getElementById('money');
         const levelEl = document.getElementById('level');
+        const modal = document.getElementById('sell-modal');
+        const sellText = document.getElementById('sell-text');
 
         function createCorn() {
             game.innerHTML = '';
-            
             for (let i = 0; i < 22; i++) {
                 const corn = document.createElement('div');
                 corn.className = 'corn';
@@ -116,7 +153,6 @@
                 corn.dataset.stage = '0';
                 
                 corn.addEventListener('click', () => harvest(corn));
-                
                 game.appendChild(corn);
                 startGrowing(corn);
             }
@@ -143,12 +179,10 @@
             if (corn.dataset.stage === '2') {
                 score++;
                 money += 22;
-                
                 scoreEl.textContent = score;
                 moneyEl.textContent = money;
 
                 corn.style.transform = 'scale(0)';
-                
                 setTimeout(() => {
                     corn.textContent = '🌱';
                     corn.style.transform = 'scale(1)';
@@ -170,10 +204,20 @@
                 const total = score * 22;
                 money += total;
                 moneyEl.textContent = money;
-                alert(`✅ Você vendeu ${score} milhos por R$ ${total}!`);
+
+                // Mostra o modal com imagem
+                sellText.innerHTML = `Você vendeu <strong>${score}</strong> milhos<br>e ganhou <strong>R$ ${total}</strong>!`;
+                modal.style.display = 'flex';
+
                 score = 0;
                 scoreEl.textContent = score;
+            } else {
+                alert("Você não tem milhos para vender!");
             }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
         }
 
         function upgradeSpeed() {
@@ -189,7 +233,7 @@
             }
         }
 
-        // Iniciar o jogo
+        // Iniciar jogo
         window.onload = createCorn;
     </script>
 
