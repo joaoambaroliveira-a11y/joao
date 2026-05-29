@@ -3,292 +3,241 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌽 Fazenda Milho Pro - Com Colheitadeira</title>
+    <title>🥊 Arena de Luta</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(#0f3d22, #1e4d2b);
+            background: #0a0a0a;
             color: white;
             text-align: center;
-            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
         }
-        h1 { 
-            padding: 20px; 
-            font-size: 2.8em; 
-            text-shadow: 0 0 15px #ffeb3b;
+        h1 {
+            color: #ff4444;
+            text-shadow: 0 0 15px #ff0000;
+            margin: 15px;
         }
-        
-        #hud {
-            font-size: 1.35em;
-            margin: 12px 0;
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            flex-wrap: wrap;
-        }
-        
-        #game {
-            width: 920px;
-            height: 520px;
-            margin: 15px auto;
+        #arena {
+            width: 820px;
+            height: 420px;
+            background: linear-gradient(#1a1a1a, #333);
+            margin: 20px auto;
             position: relative;
-            border: 12px solid #1e4a2b;
-            border-radius: 20px;
+            border: 10px solid #550000;
+            border-radius: 15px;
             overflow: hidden;
-            background: url('https://i.ibb.co/0qY0zqY/corn-field-harvester.jpg') center/cover no-repeat;
         }
-        
-        .plot {
+        .fighter {
             position: absolute;
-            width: 78px;
-            height: 78px;
-            background: rgba(255,255,255,0.1);
-            border: 3px dashed #ddd;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 48px;
-            cursor: pointer;
-            transition: all 0.3s;
-            z-index: 10;
+            font-size: 90px;
+            bottom: 60px;
+            transition: all 0.15s;
         }
-        .plot:hover { transform: scale(1.12); }
-        .plot.planted { border-style: solid; background: rgba(46, 107, 63, 0.4); }
-        .plot.ready { animation: shake 0.6s infinite alternate; }
+        #player { left: 120px; }
+        #enemy { right: 120px; transform: scaleX(-1); }
 
-        @keyframes shake {
-            from { transform: rotate(-8deg); }
-            to { transform: rotate(8deg); }
+        .health-bar {
+            height: 30px;
+            background: #222;
+            width: 320px;
+            margin: 10px auto;
+            border: 4px solid #fff;
+            border-radius: 8px;
+            overflow: hidden;
         }
-
-        #harvester {
-            position: absolute;
-            font-size: 65px;
-            bottom: 30px;
-            left: -80px;
-            cursor: pointer;
-            transition: left 3s linear;
-            z-index: 20;
+        .health {
+            height: 100%;
+            background: linear-gradient(#4caf50, #8bc34a);
+            width: 100%;
+            transition: width 0.4s;
+        }
+        #enemy-health-bar .health {
+            background: linear-gradient(#f44336, #ff5722);
         }
 
+        #controls {
+            margin: 20px;
+        }
         button {
-            padding: 12px 20px;
-            margin: 8px;
-            font-size: 1.05em;
-            background: #f4a261;
+            padding: 15px 22px;
+            margin: 6px;
+            font-size: 18px;
+            background: #c62828;
             color: white;
             border: none;
             border-radius: 10px;
             cursor: pointer;
         }
-        button:hover { background: #e76f51; }
-        .seed-btn { background: #4caf50; }
-        .seed-btn:hover { background: #388e3c; }
+        button:hover { background: #e53935; transform: scale(1.05); }
+
+        #message {
+            font-size: 45px;
+            margin: 20px;
+            font-weight: bold;
+            min-height: 60px;
+        }
     </style>
 </head>
 <body>
 
-    <h1>🌽 Fazenda Milho Pro 🌽</h1>
-    
-    <div id="hud">
-        <div>Nível: <strong id="level">1</strong></div>
-        <div>XP: <strong id="xp">0</strong>/<strong id="xp-max">100</strong></div>
-        <div>Dinheiro: <strong>R$ <span id="money">80</span></strong></div>
-        <div>Água: <strong id="water">20</strong> 💧</div>
-        <div>Milhos: <strong id="score">0</strong></div>
+    <h1>🥊 ARENA DE LUTA 🥊</h1>
+
+    <div class="health-bar">
+        <div class="health" id="player-health"></div>
+        <strong>JOGADOR</strong>
     </div>
 
-    <div id="game">
-        <div id="harvester" title="Colheitadeira - Clique para usar">🚜</div>
+    <div id="arena">
+        <div id="player" class="fighter">🥊</div>
+        <div id="enemy" class="fighter">🥊</div>
     </div>
 
-    <div>
-        <button onclick="buyWater()">💧 Comprar Água (R$15)</button>
-        <button onclick="useHarvester()" style="background:#d32f2f;">🚜 Usar Colheitadeira (R$30)</button>
-        <button class="seed-btn" onclick="selectSeed(0)">🌱 Milho Comum</button>
-        <button class="seed-btn" onclick="selectSeed(1)" id="btn-sweet" disabled>🍯 Milho Doce</button>
-        <button class="seed-btn" onclick="selectSeed(2)" id="btn-golden" disabled>✨ Milho Dourado</button>
+    <div class="health-bar" id="enemy-health-bar">
+        <div class="health" id="enemy-health"></div>
+        <strong>INIMIGO</strong>
     </div>
+
+    <div id="controls">
+        <button onclick="punch()">👊 Soco Forte</button>
+        <button onclick="kick()">🦵 Chute Alto</button>
+        <button onclick="special()">🔥 Especial</button>
+        <button onclick="defend()">🛡️ Defender</button>
+        <button onclick="resetGame()">🔄 Novo Combate</button>
+    </div>
+
+    <div id="message"></div>
 
     <script>
-        let level = 1;
-        let xp = 0;
-        let xpToNext = 100;
-        let money = 80;
-        let water = 20;
-        let score = 0;
-        let selectedSeed = 0;
+        let playerHP = 100;
+        let enemyHP = 100;
+        let gameOver = false;
+        let defending = false;
 
-        const seedTypes = [
-            { name: "Comum", emoji: "🌽", price: 22, growthTime: 2800 },
-            { name: "Doce",  emoji: "🍯", price: 45, growthTime: 2200 },
-            { name: "Dourado", emoji: "🌟", price: 90, growthTime: 1800 }
-        ];
+        const playerHealthEl = document.getElementById('player-health');
+        const enemyHealthEl = document.getElementById('enemy-health');
+        const messageEl = document.getElementById('message');
+        const player = document.getElementById('player');
+        const enemy = document.getElementById('enemy');
 
-        const game = document.getElementById('game');
-        const harvester = document.getElementById('harvester');
-        const levelEl = document.getElementById('level');
-        const xpEl = document.getElementById('xp');
-        const xpMaxEl = document.getElementById('xp-max');
-        const moneyEl = document.getElementById('money');
-        const waterEl = document.getElementById('water');
-        const scoreEl = document.getElementById('score');
-
-        function createPlots() {
-            // Remove plots antigos
-            const plots = document.querySelectorAll('.plot');
-            plots.forEach(p => p.remove());
-
-            for (let i = 0; i < 16; i++) {
-                const plot = document.createElement('div');
-                plot.className = 'plot';
-                plot.style.left = Math.random() * 84 + '%';
-                plot.style.top = Math.random() * 75 + '%';
-                plot.dataset.stage = '0';
-                plot.dataset.watered = 'false';
-                plot.dataset.seedType = '0';
-                
-                plot.addEventListener('click', () => handlePlot(plot));
-                game.appendChild(plot);
-            }
+        function updateHealth() {
+            playerHealthEl.style.width = playerHP + '%';
+            enemyHealthEl.style.width = enemyHP + '%';
         }
 
-        function handlePlot(plot) {
-            const stage = parseInt(plot.dataset.stage);
-            
-            if (stage === 0 && water > 0) {
-                plot.textContent = '🌱';
-                plot.classList.add('planted');
-                plot.dataset.stage = '1';
-                plot.dataset.seedType = selectedSeed;
-                water--;
-                waterEl.textContent = water;
-            } 
-            else if (stage === 1 && water > 0) {
-                plot.dataset.watered = 'true';
-                plot.style.borderColor = '#4fc3f7';
-                water--;
-                waterEl.textContent = water;
-                accelerateGrowth(plot);
-            } 
-            else if (stage === 2) {
-                harvestSingle(plot);
-            }
+        function punch() {
+            if (gameOver) return;
+            const damage = 22;
+            enemyHP -= damage;
+            if (enemyHP < 0) enemyHP = 0;
+
+            player.style.transform = 'translateX(70px)';
+            setTimeout(() => player.style.transform = 'translateX(0)', 180);
+
+            updateHealth();
+            checkWin();
+            if (!gameOver) setTimeout(enemyTurn, 600);
         }
 
-        function harvestSingle(plot) {
-            const type = parseInt(plot.dataset.seedType);
-            const earned = seedTypes[type].price;
-            
-            money += earned;
-            score++;
-            xp += 12 + type * 10;
-            
-            moneyEl.textContent = money;
-            scoreEl.textContent = score;
-            updateXP();
+        function kick() {
+            if (gameOver) return;
+            const damage = 28;
+            enemyHP -= damage;
+            if (enemyHP < 0) enemyHP = 0;
 
-            plot.style.transform = 'scale(0)';
-            setTimeout(() => {
-                plot.textContent = '';
-                plot.classList.remove('planted', 'ready');
-                plot.style.borderColor = '';
-                plot.dataset.stage = '0';
-                plot.dataset.watered = 'false';
-                plot.style.transform = 'scale(1)';
-            }, 300);
+            player.style.transform = 'translateX(60px)';
+            setTimeout(() => player.style.transform = 'translateX(0)', 250);
+
+            updateHealth();
+            checkWin();
+            if (!gameOver) setTimeout(enemyTurn, 700);
         }
 
-        function accelerateGrowth(plot) {
-            const type = parseInt(plot.dataset.seedType);
-            const time = seedTypes[type].growthTime;
+        function special() {
+            if (gameOver) return;
+            const damage = 48;
+            enemyHP -= damage;
+            if (enemyHP < 0) enemyHP = 0;
+
+            player.textContent = '💥';
+            setTimeout(() => player.textContent = '🥊', 500);
+
+            updateHealth();
+            checkWin();
+            if (!gameOver) setTimeout(enemyTurn, 800);
+        }
+
+        function defend() {
+            if (gameOver) return;
+            defending = true;
+            player.textContent = '🛡️';
+            messageEl.textContent = "Defendendo...";
             
             setTimeout(() => {
-                if (plot.dataset.stage === '1') {
-                    plot.textContent = seedTypes[type].emoji;
-                    plot.dataset.stage = '2';
-                    plot.classList.add('ready');
-                }
-            }, time / 1.7);
+                defending = false;
+                player.textContent = '🥊';
+                messageEl.textContent = "";
+            }, 1200);
         }
 
-        function useHarvester() {
-            if (money < 30) {
-                alert("Dinheiro insuficiente para usar a colheitadeira!");
-                return;
-            }
+        function enemyTurn() {
+            if (gameOver || playerHP <= 0) return;
 
-            money -= 30;
-            moneyEl.textContent = money;
+            const rand = Math.random();
+            let damage = 18;
 
-            // Animação da máquina
-            harvester.style.transition = 'left 3.5s linear';
-            harvester.style.left = '950px';
-
-            let harvested = 0;
-
-            setTimeout(() => {
-                const plots = document.querySelectorAll('.plot');
-                plots.forEach(plot => {
-                    if (plot.dataset.stage === '2') {
-                        harvestSingle(plot);
-                        harvested++;
-                    }
-                });
-
-                if (harvested > 0) {
-                    alert(`🚜 Colheitadeira usada! Você colheu ${harvested} milhos automaticamente!`);
-                } else {
-                    alert("🚜 Não havia milhos prontos para colher.");
-                }
-
-                // Resetar posição da máquina
-                harvester.style.transition = 'none';
-                harvester.style.left = '-80px';
-                
-                setTimeout(() => {
-                    harvester.style.transition = 'left 3.5s linear';
-                }, 100);
-            }, 3200);
-        }
-
-        function selectSeed(type) {
-            if (type === 1 && level < 3) return alert("Desbloqueia no Nível 3");
-            if (type === 2 && level < 6) return alert("Desbloqueia no Nível 6");
-            selectedSeed = type;
-            alert(`🌱 Selecionado: ${seedTypes[type].name}`);
-        }
-
-        function buyWater() {
-            if (money >= 15) {
-                money -= 15;
-                water += 12;
-                moneyEl.textContent = money;
-                waterEl.textContent = water;
+            if (rand < 0.4) {
+                // Soco inimigo
+                damage = 20;
+            } else if (rand < 0.7) {
+                // Chute inimigo
+                damage = 26;
             } else {
-                alert("Dinheiro insuficiente!");
+                // Especial inimigo
+                damage = 35;
+            }
+
+            if (defending) {
+                damage = Math.floor(damage * 0.4);
+                messageEl.textContent = "Defesa boa!";
+            }
+
+            playerHP -= damage;
+            if (playerHP < 0) playerHP = 0;
+
+            enemy.style.transform = 'translateX(-70px)';
+            setTimeout(() => enemy.style.transform = 'translateX(0)', 300);
+
+            updateHealth();
+            checkWin();
+        }
+
+        function checkWin() {
+            if (playerHP <= 0) {
+                gameOver = true;
+                messageEl.innerHTML = "💀 Você Perdeu...";
+                messageEl.style.color = "#ff4444";
+            } else if (enemyHP <= 0) {
+                gameOver = true;
+                messageEl.innerHTML = "🏆 VITÓRIA!";
+                messageEl.style.color = "#4caf50";
             }
         }
 
-        function updateXP() {
-            xpEl.textContent = xp;
-            if (xp >= xpToNext) {
-                level++;
-                xp = 0;
-                xpToNext = Math.floor(xpToNext * 1.45);
-                levelEl.textContent = level;
-                xpMaxEl.textContent = xpToNext;
-                
-                if (level === 3) document.getElementById('btn-sweet').disabled = false;
-                if (level === 6) document.getElementById('btn-golden').disabled = false;
-                
-                alert(`🎉 Você subiu para o Nível ${level}!`);
-            }
+        function resetGame() {
+            playerHP = 100;
+            enemyHP = 100;
+            gameOver = false;
+            defending = false;
+            messageEl.innerHTML = '';
+            player.textContent = '🥊';
+            enemy.textContent = '🥊';
+            updateHealth();
         }
 
-        window.onload = createPlots;
+        // Iniciar
+        updateHealth();
     </script>
+
 </body>
 </html>
