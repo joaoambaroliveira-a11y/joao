@@ -1,418 +1,251 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐅 JOGO DO TIGRÃO 🐅</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #0f0c0a, #3a1f0f);
-        color: #ffd700;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        overflow: hidden;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 420px;
-        background: #1a1108;
-        border: 8px solid #d4a017;
-        border-radius: 25px;
-        overflow: hidden;
-        box-shadow: 0 0 40px rgba(212, 160, 23, 0.8);
-        position: relative;
-    }
-
-    .header {
-        background: linear-gradient(#b8860b, #8b5a00);
-        padding: 20px;
-        text-align: center;
-        border-bottom: 5px solid #ffd700;
-    }
-
-    .header h1 {
-        font-size: 32px;
-        text-shadow: 0 0 15px #ff4500;
-    }
-
-    .reels {
-        background: #000;
-        padding: 25px 20px;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        border-bottom: 5px solid #d4a017;
-    }
-
-    .reel {
-        width: 95px;
-        height: 115px;
-        background: #111;
-        border: 5px solid #ffd700;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 58px;
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-        transition: all 0.4s;
-    }
-
-    /* === EFEITO NEON / BRILHO === */
-    .reel.win-glow {
-        border-color: #ffff00;
-        box-shadow: 
-            0 0 15px #ffff00,
-            0 0 30px #ff00ff,
-            0 0 45px #00ffff,
-            inset 0 0 25px #ffd700;
-        animation: neonPulse 0.8s infinite alternate;
-    }
-
-    @keyframes neonPulse {
-        from { 
-            box-shadow: 
-                0 0 15px #ffff00,
-                0 0 30px #ff00ff,
-                0 0 45px #00ffff;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Chute ao Gol - Modo Avançado</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(#0b5e2f, #083d1f);
+            color: white;
+            text-align: center;
+            margin: 0;
+            padding: 15px;
         }
-        to { 
-            box-shadow: 
-                0 0 25px #ffff00,
-                0 0 45px #ff00ff,
-                0 0 65px #00ffff,
-                inset 0 0 35px #ffd700;
+        h1 {
+            margin: 10px;
+            text-shadow: 0 0 15px #ffeb3b;
         }
-    }
-
-    .info {
-        padding: 15px 20px;
-        background: #2a1a0f;
-        text-align: center;
-    }
-
-    .balance, .bet {
-        font-size: 19px;
-        margin: 10px 0;
-        font-weight: bold;
-    }
-
-    .balance span, .bet span { color: #00ff88; }
-
-    .controls {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .btn {
-        padding: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-        transition: all 0.3s;
-    }
-
-    .spin-btn {
-        background: linear-gradient(#ff4500, #cc3700);
-        color: white;
-        font-size: 24px;
-        padding: 20px;
-    }
-
-    .autoplay-btn {
-        background: linear-gradient(#00b300, #008000);
-        color: white;
-    }
-
-    .bet-controls {
-        display: flex;
-        gap: 10px;
-    }
-
-    .bet-btn {
-        background: #444;
-        color: #ffd700;
-        flex: 1;
-        font-size: 20px;
-    }
-
-    .auto-options {
-        display: flex;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
-
-    .auto-option {
-        background: #333;
-        color: #ffd700;
-        border: none;
-        padding: 8px 12px;
-        border-radius: 8px;
-        font-size: 15px;
-        cursor: pointer;
-    }
-
-    .auto-option.active {
-        background: #00b300;
-        color: white;
-    }
-
-    .result {
-        text-align: center;
-        font-size: 24px;
-        min-height: 40px;
-        margin-top: 10px;
-        font-weight: bold;
-    }
-
-    .spinning { animation: spin 0.7s linear infinite; }
-    @keyframes spin { 0% { transform: rotateX(0deg); } 100% { transform: rotateX(360deg); } }
-
-    .jackpot {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        font-size: 42px;
-        font-weight: bold;
-        color: #ff00ff;
-        text-shadow: 0 0 20px #ffff00, 0 0 40px #ff00ff;
-        animation: jackpotAnim 1.5s infinite;
-        z-index: 400;
-    }
-
-    @keyframes jackpotAnim {
-        0%, 100% { transform: translate(-50%, -50%) scale(1); }
-        50% { transform: translate(-50%, -50%) scale(1.25); }
-    }
-  </style>
+        #game {
+            width: 850px;
+            height: 480px;
+            background: #0f8f4a;
+            margin: 15px auto;
+            position: relative;
+            border: 10px solid #052b17;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+        #goal {
+            position: absolute;
+            top: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 460px;
+            height: 240px;
+            border: 14px solid white;
+            border-top: none;
+        }
+        #goalkeeper {
+            position: absolute;
+            font-size: 90px;
+            top: 130px;
+            transition: left 0.25s;
+        }
+        #ball {
+            position: absolute;
+            font-size: 48px;
+            bottom: 70px;
+            left: 50%;
+            transform: translateX(-50%);
+            cursor: grab;
+            user-select: none;
+            transition: none;
+        }
+        #power-bar {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 18px;
+            background: #333;
+            border: 3px solid white;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        #power {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, #4caf50, #ffeb3b, #f44336);
+            transition: width 0.05s;
+        }
+        .info {
+            font-size: 26px;
+            margin: 12px;
+        }
+        #message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 48px;
+            font-weight: bold;
+            text-shadow: 0 0 20px black;
+            display: none;
+            z-index: 100;
+        }
+        button {
+            padding: 12px 24px;
+            margin: 10px;
+            font-size: 18px;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
 
-  <div class="container">
-    <div class="header">
-      <h1>🐅 JOGO DO TIGRÃO 🐅</h1>
-    </div>
-
-    <div class="reels">
-      <div class="reel" id="reel1">🐅</div>
-      <div class="reel" id="reel2">🍒</div>
-      <div class="reel" id="reel3">⭐</div>
-    </div>
-
+    <h1>⚽ CHUTE AO GOL ⚽</h1>
     <div class="info">
-      <div class="balance">Saldo: R$ <span id="saldo">500.00</span></div>
-      <div class="bet">Aposta: R$ <span id="aposta">10.00</span></div>
+        Pênaltis: <strong id="penalties">0 / 5</strong> | 
+        Gols: <strong id="score">0</strong>
     </div>
 
-    <div class="controls">
-      <div class="bet-controls">
-        <button class="btn bet-btn" id="diminuir">− 10</button>
-        <button class="btn bet-btn" id="aumentar">+ 10</button>
-      </div>
-
-      <button class="btn spin-btn" id="spinBtn">🌀 GIRAR MANUAL 🌀</button>
-      <button class="btn autoplay-btn" id="autoBtn">▶ AUTO PLAY</button>
-      
-      <div id="autoPanel" style="display: none; background:#2a1a0f; padding:12px; border-radius:12px;">
-        <p style="margin-bottom:8px; text-align:center;">Quantidade de giros:</p>
-        <div class="auto-options">
-          <button class="auto-option active" data-qty="10">10x</button>
-          <button class="auto-option" data-qty="25">25x</button>
-          <button class="auto-option" data-qty="50">50x</button>
-          <button class="auto-option" data-qty="100">100x</button>
-        </div>
-        <button class="btn" id="stopAuto" style="margin-top:12px; background:#c00; width:100%;">⛔ PARAR AUTO PLAY</button>
-      </div>
-
-      <div class="result" id="result"></div>
+    <div id="game">
+        <div id="goal"></div>
+        <div id="goalkeeper">🥅</div>
+        <div id="ball">⚽</div>
+        <div id="power-bar"><div id="power"></div></div>
+        <div id="message"></div>
     </div>
 
-    <div style="text-align: center; padding: 12px; background: #0f0a05; font-size: 15px;">
-      Banca da Casa: R$ <span id="banca">10000.00</span>
-    </div>
-  </div>
+    <button onclick="resetGame()">🔄 Novo Jogo (5 Pênaltis)</button>
 
-  <script>
-    // ... (mesmo script anterior com a adição do efeito neon)
+    <script>
+        let score = 0;
+        let penalties = 0;
+        let isDragging = false;
+        let startX, startY;
+        let power = 0;
+        let gameActive = true;
 
-    const emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"];
+        const ball = document.getElementById('ball');
+        const goalkeeper = document.getElementById('goalkeeper');
+        const message = document.getElementById('message');
+        const scoreEl = document.getElementById('score');
+        const penaltiesEl = document.getElementById('penalties');
+        const powerBar = document.getElementById('power');
 
-    let saldo = 500;
-    let aposta = 10;
-    let banca = 10000;
-    let isAutoPlaying = false;
-    let autoInterval = null;
+        // Posições do goleiro
+        function moveGoalkeeper() {
+            const pos = Math.random();
+            if (pos < 0.35) goalkeeper.style.left = '25%';      // esquerda
+            else if (pos < 0.65) goalkeeper.style.left = '48%'; // meio
+            else goalkeeper.style.left = '71%';                 // direita
+        }
 
-    const reel1 = document.getElementById('reel1');
-    const reel2 = document.getElementById('reel2');
-    const reel3 = document.getElementById('reel3');
-    const reels = [reel1, reel2, reel3];
+        function kickBall(dx, dy) {
+            if (!gameActive) return;
+            gameActive = false;
+            penalties++;
+            penaltiesEl.textContent = `${penalties} / 5`;
 
-    const saldoEl = document.getElementById('saldo');
-    const apostaEl = document.getElementById('aposta');
-    const bancaEl = document.getElementById('banca');
-    const resultEl = document.getElementById('result');
-    const spinBtn = document.getElementById('spinBtn');
-    const autoBtn = document.getElementById('autoBtn');
-    const autoPanel = document.getElementById('autoPanel');
-    const stopAuto = document.getElementById('stopAuto');
-    const container = document.querySelector('.container');
+            const powerLevel = Math.min(Math.sqrt(dx*dx + dy*dy) / 3, 100);
+            powerBar.style.width = powerLevel + '%';
 
-    function atualizarTela() {
-      saldoEl.textContent = saldo.toFixed(2);
-      apostaEl.textContent = aposta.toFixed(2);
-      bancaEl.textContent = banca.toFixed(2);
-    }
+            // Animação da bola
+            const distance = Math.min(powerLevel * 2.8, 380);
+            const angle = Math.atan2(dy, dx);
 
-    function ativarNeon() {
-      reels.forEach(reel => reel.classList.add('win-glow'));
-      setTimeout(() => {
-        reels.forEach(reel => reel.classList.remove('win-glow'));
-      }, 3200);
-    }
+            const endX = Math.cos(angle) * distance;
+            const endY = -Math.abs(Math.sin(angle) * distance) - 100;
 
-    function lancarConfetes(quantidade = 80) { /* mesma função */ 
-      const confettiContainer = document.createElement('div');
-      confettiContainer.style.cssText = `position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:200;`;
-      container.appendChild(confettiContainer);
+            ball.style.transition = 'transform 1.1s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            ball.style.transform = `translate(${endX}px, ${endY}px)`;
 
-      for (let i = 0; i < quantidade; i++) {
-        const confete = document.createElement('div');
-        confete.style.cssText = `position:absolute; width:12px; height:12px; border-radius:50%; background:${['#ffd700','#ff00ff','#00ffff','#ffff00','#ff4500'][Math.floor(Math.random()*5)]}; left:${Math.random()*100}%; top:-20px;`;
-        confettiContainer.appendChild(confete);
+            moveGoalkeeper();
 
-        const duration = Math.random() * 3 + 3;
-        confete.animate([{transform:'translateY(0)'}, {transform:`translateY(${window.innerHeight+100}px) rotate(${Math.random()*1200}deg)`}], 
-          {duration: duration*1000});
-        setTimeout(() => confete.remove(), duration*1100);
-      }
-      setTimeout(() => confettiContainer.remove(), 6000);
-    }
+            setTimeout(() => {
+                const saved = goalkeeper.style.left;
+                const goalChance = powerLevel > 65 ? 0.85 : 0.65;
 
-    function mostrarJackpot() {
-      const jackpotText = document.createElement('div');
-      jackpotText.className = 'jackpot';
-      jackpotText.textContent = '💰 JACKPOT 💰';
-      container.appendChild(jackpotText);
-      setTimeout(() => jackpotText.remove(), 2800);
-    }
+                if (Math.random() < goalChance && 
+                    (saved.includes('25%') && endX > -80 || 
+                     saved.includes('71%') && endX < 80 || 
+                     saved.includes('48%'))) {
+                    
+                    score++;
+                    scoreEl.textContent = score;
+                    message.textContent = "🥅 GOOOOL!!!";
+                    message.style.color = "#4caf50";
+                } else {
+                    message.textContent = "🧤 DEFENDEU!";
+                    message.style.color = "#ff9800";
+                }
 
-    function mostrarCartinha(ganho, isJackpot = false) {
-      const cartinha = document.createElement('div');
-      cartinha.style.cssText = `position:absolute; top:45%; left:50%; transform:translate(-50%,-50%) scale(0); 
-        background:${isJackpot ? 'linear-gradient(#ffd700,#b8860b)' : 'linear-gradient(#fff,#f8e8c0)'};
-        color:#000; width:290px; padding:25px; border:6px solid #fff; border-radius:20px; 
-        text-align:center; box-shadow:0 15px 40px rgba(0,0,0,0.9); z-index:300; animation:soltarCartinha 4.5s forwards;`;
-      
-      cartinha.innerHTML = isJackpot 
-        ? `<h2 style="font-size:26px;">🔥 JACKPOT! 🔥</h2><div style="font-size:34px;font-weight:bold;">R$ ${ganho}</div>`
-        : `<h2>🎟️ TIGRAÇO PREMIADO 🎟️</h2><div style="font-size:32px;font-weight:bold;color:#006600;">R$ ${ganho}</div>`;
-      
-      container.appendChild(cartinha);
-      setTimeout(() => cartinha.remove(), 4500);
-    }
+                message.style.display = 'block';
 
-    function girarRolos(isAuto = false) {
-      reels.forEach(reel => reel.classList.add('spinning'));
+                setTimeout(() => {
+                    if (penalties >= 5) {
+                        alert(`Fim de jogo! Você fez ${score} gols de 5 pênaltis!`);
+                        resetGame();
+                    } else {
+                        resetPositions();
+                    }
+                }, 1600);
+            }, 1100);
+        }
 
-      setTimeout(() => {
-        const resultado = Array(3).fill().map(() => emojis[Math.floor(Math.random() * emojis.length)]);
+        // Controles de mouse
+        ball.addEventListener('mousedown', (e) => {
+            if (!gameActive) return;
+            isDragging = true;
+            startX = e.clientX;
+            startY = e.clientY;
+            ball.style.cursor = 'grabbing';
+        });
 
-        reel1.textContent = resultado[0];
-        reel2.textContent = resultado[1];
-        reel3.textContent = resultado[2];
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
+            const powerLevel = Math.min(Math.sqrt(dx*dx + dy*dy) / 3, 100);
+            powerBar.style.width = powerLevel + '%';
+        });
 
-        reels.forEach(reel => reel.classList.remove('spinning'));
-        verificarResultado(resultado, isAuto);
-      }, 1400);
-    }
+        document.addEventListener('mouseup', (e) => {
+            if (!isDragging) return;
+            isDragging = false;
+            ball.style.cursor = 'grab';
 
-    function verificarResultado(resultado, isAuto) {
-      const tigres = resultado.filter(r => r === "🐅").length;
+            const dx = e.clientX - startX;
+            const dy = e.clientY - startY;
 
-      if (tigres === 3) {
-        const ganho = Math.floor(Math.random() * 4001) + 2000;
-        saldo += ganho;
-        banca -= ganho;
-        resultEl.innerHTML = `💰 JACKPOT!!! + R$ ${ganho}`;
-        
-        ativarNeon();
-        lancarConfetes(160);
-        mostrarJackpot();
-        mostrarCartinha(ganho, true);
+            if (Math.abs(dx) > 20 || Math.abs(dy) > 20) {
+                kickBall(dx, dy);
+            } else {
+                powerBar.style.width = '0%';
+            }
+        });
 
-      } else if (tigres >= 1) {
-        const ganho = Math.floor(Math.random() * 901) + 100;
-        saldo += ganho;
-        banca -= ganho;
-        resultEl.innerHTML = `🎉 TIGRAÇO! + R$ ${ganho}`;
-        
-        ativarNeon();
-        lancarConfetes(90);
-        mostrarCartinha(ganho);
+        function resetPositions() {
+            ball.style.transition = 'none';
+            ball.style.transform = 'translateX(-50%)';
+            goalkeeper.style.left = '48%';
+            message.style.display = 'none';
+            powerBar.style.width = '0%';
+            gameActive = true;
+        }
 
-        if (aposta < 200) aposta += 10;
-      } else {
-        saldo -= aposta;
-        banca += aposta;
-        resultEl.textContent = "😢 Sem Tigrão...";
-      }
+        function resetGame() {
+            score = 0;
+            penalties = 0;
+            scoreEl.textContent = 0;
+            penaltiesEl.textContent = '0 / 5';
+            resetPositions();
+        }
 
-      atualizarTela();
+        // Iniciar
+        window.onload = () => {
+            goalkeeper.style.left = '48%';
+        };
+    </script>
 
-      if (saldo < aposta && isAutoPlaying) {
-        pararAutoPlay();
-      }
-    }
-
-    // ====================== AUTO PLAY ======================
-    function iniciarAutoPlay(quantidade) { /* mesmo código anterior */ 
-      // ... (mantido igual)
-    }
-
-    function pararAutoPlay() { /* mesmo código anterior */ }
-
-    // Eventos (mesmo de antes)
-    spinBtn.addEventListener('click', () => {
-      if (saldo < aposta) return alert("Saldo insuficiente!");
-      resultEl.textContent = "";
-      girarRolos();
-    });
-
-    autoBtn.addEventListener('click', () => autoPanel.style.display = 'block');
-    stopAuto.addEventListener('click', pararAutoPlay);
-
-    document.querySelectorAll('.auto-option').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.auto-option').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        iniciarAutoPlay(parseInt(btn.dataset.qty));
-      });
-    });
-
-    document.getElementById('aumentar').addEventListener('click', () => {
-      if (aposta + 10 <= saldo) aposta += 10;
-      atualizarTela();
-    });
-
-    document.getElementById('diminuir').addEventListener('click', () => {
-      if (aposta > 10) aposta -= 10;
-      atualizarTela();
-    });
-
-    atualizarTela();
-  </script>
 </body>
 </html>
