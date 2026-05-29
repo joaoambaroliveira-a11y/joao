@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌽 Fazenda Milho Pro</title>
+    <title>🌽 Fazenda Milho Pro - Com Colheitadeira</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -15,7 +15,7 @@
         }
         h1 { 
             padding: 20px; 
-            font-size: 2.9em; 
+            font-size: 2.8em; 
             text-shadow: 0 0 15px #ffeb3b;
         }
         
@@ -24,7 +24,7 @@
             margin: 12px 0;
             display: flex;
             justify-content: center;
-            gap: 35px;
+            gap: 30px;
             flex-wrap: wrap;
         }
         
@@ -36,7 +36,6 @@
             border: 12px solid #1e4a2b;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
             background: url('https://i.ibb.co/0qY0zqY/corn-field-harvester.jpg') center/cover no-repeat;
         }
         
@@ -62,6 +61,16 @@
         @keyframes shake {
             from { transform: rotate(-8deg); }
             to { transform: rotate(8deg); }
+        }
+
+        #harvester {
+            position: absolute;
+            font-size: 65px;
+            bottom: 30px;
+            left: -80px;
+            cursor: pointer;
+            transition: left 3s linear;
+            z-index: 20;
         }
 
         button {
@@ -91,10 +100,13 @@
         <div>Milhos: <strong id="score">0</strong></div>
     </div>
 
-    <div id="game"></div>
+    <div id="game">
+        <div id="harvester" title="Colheitadeira - Clique para usar">🚜</div>
+    </div>
 
     <div>
         <button onclick="buyWater()">💧 Comprar Água (R$15)</button>
+        <button onclick="useHarvester()" style="background:#d32f2f;">🚜 Usar Colheitadeira (R$30)</button>
         <button class="seed-btn" onclick="selectSeed(0)">🌱 Milho Comum</button>
         <button class="seed-btn" onclick="selectSeed(1)" id="btn-sweet" disabled>🍯 Milho Doce</button>
         <button class="seed-btn" onclick="selectSeed(2)" id="btn-golden" disabled>✨ Milho Dourado</button>
@@ -116,6 +128,7 @@
         ];
 
         const game = document.getElementById('game');
+        const harvester = document.getElementById('harvester');
         const levelEl = document.getElementById('level');
         const xpEl = document.getElementById('xp');
         const xpMaxEl = document.getElementById('xp-max');
@@ -124,12 +137,15 @@
         const scoreEl = document.getElementById('score');
 
         function createPlots() {
-            game.innerHTML = '';
+            // Remove plots antigos
+            const plots = document.querySelectorAll('.plot');
+            plots.forEach(p => p.remove());
+
             for (let i = 0; i < 16; i++) {
                 const plot = document.createElement('div');
                 plot.className = 'plot';
                 plot.style.left = Math.random() * 84 + '%';
-                plot.style.top = Math.random() * 78 + '%';
+                plot.style.top = Math.random() * 75 + '%';
                 plot.dataset.stage = '0';
                 plot.dataset.watered = 'false';
                 plot.dataset.seedType = '0';
@@ -158,27 +174,31 @@
                 accelerateGrowth(plot);
             } 
             else if (stage === 2) {
-                const type = parseInt(plot.dataset.seedType);
-                const earned = seedTypes[type].price;
-                
-                money += earned;
-                score++;
-                xp += 12 + type * 10;
-                
-                moneyEl.textContent = money;
-                scoreEl.textContent = score;
-                updateXP();
-
-                plot.style.transform = 'scale(0)';
-                setTimeout(() => {
-                    plot.textContent = '';
-                    plot.classList.remove('planted', 'ready');
-                    plot.style.borderColor = '';
-                    plot.dataset.stage = '0';
-                    plot.dataset.watered = 'false';
-                    plot.style.transform = 'scale(1)';
-                }, 300);
+                harvestSingle(plot);
             }
+        }
+
+        function harvestSingle(plot) {
+            const type = parseInt(plot.dataset.seedType);
+            const earned = seedTypes[type].price;
+            
+            money += earned;
+            score++;
+            xp += 12 + type * 10;
+            
+            moneyEl.textContent = money;
+            scoreEl.textContent = score;
+            updateXP();
+
+            plot.style.transform = 'scale(0)';
+            setTimeout(() => {
+                plot.textContent = '';
+                plot.classList.remove('planted', 'ready');
+                plot.style.borderColor = '';
+                plot.dataset.stage = '0';
+                plot.dataset.watered = 'false';
+                plot.style.transform = 'scale(1)';
+            }, 300);
         }
 
         function accelerateGrowth(plot) {
@@ -192,6 +212,46 @@
                     plot.classList.add('ready');
                 }
             }, time / 1.7);
+        }
+
+        function useHarvester() {
+            if (money < 30) {
+                alert("Dinheiro insuficiente para usar a colheitadeira!");
+                return;
+            }
+
+            money -= 30;
+            moneyEl.textContent = money;
+
+            // Animação da máquina
+            harvester.style.transition = 'left 3.5s linear';
+            harvester.style.left = '950px';
+
+            let harvested = 0;
+
+            setTimeout(() => {
+                const plots = document.querySelectorAll('.plot');
+                plots.forEach(plot => {
+                    if (plot.dataset.stage === '2') {
+                        harvestSingle(plot);
+                        harvested++;
+                    }
+                });
+
+                if (harvested > 0) {
+                    alert(`🚜 Colheitadeira usada! Você colheu ${harvested} milhos automaticamente!`);
+                } else {
+                    alert("🚜 Não havia milhos prontos para colher.");
+                }
+
+                // Resetar posição da máquina
+                harvester.style.transition = 'none';
+                harvester.style.left = '-80px';
+                
+                setTimeout(() => {
+                    harvester.style.transition = 'left 3.5s linear';
+                }, 100);
+            }, 3200);
         }
 
         function selectSeed(type) {
@@ -224,7 +284,7 @@
                 if (level === 3) document.getElementById('btn-sweet').disabled = false;
                 if (level === 6) document.getElementById('btn-golden').disabled = false;
                 
-                alert(`🎉 Parabéns! Você subiu para o Nível ${level}!`);
+                alert(`🎉 Você subiu para o Nível ${level}!`);
             }
         }
 
