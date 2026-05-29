@@ -3,41 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌽 Fazenda Milho - Níveis</title>
+    <title>🌽 Fazenda Milho Pro</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(135deg, #1e4d2b, #3a8f4e);
+            background: linear-gradient(#0f3d22, #1e4d2b);
             color: white;
             text-align: center;
             min-height: 100vh;
         }
-        h1 { padding: 15px; font-size: 2.8em; text-shadow: 0 0 15px #ffeb3b; }
+        h1 { 
+            padding: 20px; 
+            font-size: 2.9em; 
+            text-shadow: 0 0 15px #ffeb3b;
+        }
         
         #hud {
-            font-size: 1.3em;
-            margin: 10px 0;
+            font-size: 1.35em;
+            margin: 12px 0;
             display: flex;
             justify-content: center;
-            gap: 30px;
+            gap: 35px;
             flex-wrap: wrap;
         }
+        
         #game {
             width: 920px;
             height: 520px;
-            background: #2e6b3f;
             margin: 15px auto;
             position: relative;
             border: 12px solid #1e4a2b;
             border-radius: 20px;
             overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.7);
+            background: url('https://i.ibb.co/0qY0zqY/corn-field-harvester.jpg') center/cover no-repeat;
         }
+        
         .plot {
             position: absolute;
             width: 78px;
             height: 78px;
-            background: rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.1);
             border: 3px dashed #ddd;
             border-radius: 12px;
             display: flex;
@@ -46,13 +53,16 @@
             font-size: 48px;
             cursor: pointer;
             transition: all 0.3s;
+            z-index: 10;
         }
-        .plot:hover { transform: scale(1.1); }
-        .plot.planted { border-style: solid; }
-        .plot.ready { animation: shake 0.5s infinite alternate; }
-        .plot.dry { opacity: 0.7; }
+        .plot:hover { transform: scale(1.12); }
+        .plot.planted { border-style: solid; background: rgba(46, 107, 63, 0.4); }
+        .plot.ready { animation: shake 0.6s infinite alternate; }
 
-        @keyframes shake { from { transform: rotate(-8deg); } to { transform: rotate(8deg); } }
+        @keyframes shake {
+            from { transform: rotate(-8deg); }
+            to { transform: rotate(8deg); }
+        }
 
         button {
             padding: 12px 20px;
@@ -65,7 +75,6 @@
             cursor: pointer;
         }
         button:hover { background: #e76f51; }
-        
         .seed-btn { background: #4caf50; }
         .seed-btn:hover { background: #388e3c; }
     </style>
@@ -98,12 +107,12 @@
         let money = 80;
         let water = 20;
         let score = 0;
-        let selectedSeed = 0; // 0=Comum, 1=Doce, 2=Dourado
+        let selectedSeed = 0;
 
         const seedTypes = [
-            { name: "Comum", emoji: "🌽", price: 22, growthTime: 2800, color: "#ddd" },
-            { name: "Doce",  emoji: "🍯", price: 45, growthTime: 2200, color: "#ffeb3b" },
-            { name: "Dourado", emoji: "🌟", price: 90, growthTime: 1800, color: "#ffd700" }
+            { name: "Comum", emoji: "🌽", price: 22, growthTime: 2800 },
+            { name: "Doce",  emoji: "🍯", price: 45, growthTime: 2200 },
+            { name: "Dourado", emoji: "🌟", price: 90, growthTime: 1800 }
         ];
 
         const game = document.getElementById('game');
@@ -119,9 +128,9 @@
             for (let i = 0; i < 16; i++) {
                 const plot = document.createElement('div');
                 plot.className = 'plot';
-                plot.style.left = Math.random() * 85 + '%';
+                plot.style.left = Math.random() * 84 + '%';
                 plot.style.top = Math.random() * 78 + '%';
-                plot.dataset.stage = '0';     // 0=vazio, 1=plantado, 2=pronto
+                plot.dataset.stage = '0';
                 plot.dataset.watered = 'false';
                 plot.dataset.seedType = '0';
                 
@@ -134,35 +143,27 @@
             const stage = parseInt(plot.dataset.stage);
             
             if (stage === 0 && water > 0) {
-                // Plantar
                 plot.textContent = '🌱';
                 plot.classList.add('planted');
                 plot.dataset.stage = '1';
                 plot.dataset.seedType = selectedSeed;
-                plot.dataset.watered = 'false';
                 water--;
                 waterEl.textContent = water;
             } 
-            else if (stage === 1) {
-                // Regar
-                if (water > 0) {
-                    plot.dataset.watered = 'true';
-                    plot.style.borderColor = '#4fc3f7';
-                    water--;
-                    waterEl.textContent = water;
-                    accelerateGrowth(plot);
-                } else {
-                    alert("Sem água! Compre mais.");
-                }
+            else if (stage === 1 && water > 0) {
+                plot.dataset.watered = 'true';
+                plot.style.borderColor = '#4fc3f7';
+                water--;
+                waterEl.textContent = water;
+                accelerateGrowth(plot);
             } 
             else if (stage === 2) {
-                // Colher
                 const type = parseInt(plot.dataset.seedType);
                 const earned = seedTypes[type].price;
                 
                 money += earned;
                 score++;
-                xp += 10 + type * 8;
+                xp += 12 + type * 10;
                 
                 moneyEl.textContent = money;
                 scoreEl.textContent = score;
@@ -181,10 +182,8 @@
         }
 
         function accelerateGrowth(plot) {
-            if (plot.dataset.stage !== '1') return;
-            
             const type = parseInt(plot.dataset.seedType);
-            const baseTime = seedTypes[type].growthTime;
+            const time = seedTypes[type].growthTime;
             
             setTimeout(() => {
                 if (plot.dataset.stage === '1') {
@@ -192,15 +191,14 @@
                     plot.dataset.stage = '2';
                     plot.classList.add('ready');
                 }
-            }, baseTime / (plot.dataset.watered === 'true' ? 1.8 : 1));
+            }, time / 1.7);
         }
 
         function selectSeed(type) {
             if (type === 1 && level < 3) return alert("Desbloqueia no Nível 3");
             if (type === 2 && level < 6) return alert("Desbloqueia no Nível 6");
-            
             selectedSeed = type;
-            alert(`Semente selecionada: ${seedTypes[type].name}`);
+            alert(`🌱 Selecionado: ${seedTypes[type].name}`);
         }
 
         function buyWater() {
@@ -219,24 +217,17 @@
             if (xp >= xpToNext) {
                 level++;
                 xp = 0;
-                xpToNext = Math.floor(xpToNext * 1.4);
+                xpToNext = Math.floor(xpToNext * 1.45);
                 levelEl.textContent = level;
                 xpMaxEl.textContent = xpToNext;
                 
                 if (level === 3) document.getElementById('btn-sweet').disabled = false;
                 if (level === 6) document.getElementById('btn-golden').disabled = false;
                 
-                alert(`🎉 Subiu para o Nível ${level}!`);
+                alert(`🎉 Parabéns! Você subiu para o Nível ${level}!`);
             }
         }
 
-        function resetGame() {
-            if (confirm("Reiniciar todo o progresso?")) {
-                location.reload();
-            }
-        }
-
-        // Iniciar
         window.onload = createPlots;
     </script>
 </body>
