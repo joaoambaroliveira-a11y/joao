@@ -3,236 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Chute ao Gol Profissional</title>
+    <title>🌽 Colheita de Milho</title>
     <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
         body {
             font-family: Arial, sans-serif;
-            background: linear-gradient(#0b5e2f, #083d1f);
+            background: linear-gradient(135deg, #1e4d2b, #3a8f4e);
             color: white;
             text-align: center;
-            margin: 0;
-            padding: 15px;
+            min-height: 100vh;
         }
+        
         h1 {
-            margin: 10px;
+            padding: 20px;
+            font-size: 3em;
             text-shadow: 0 0 15px #ffeb3b;
         }
+        
+        #hud {
+            font-size: 1.5em;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+            flex-wrap: wrap;
+        }
+        
         #game {
-            width: 880px;
+            width: 900px;
             height: 520px;
-            background: #0a7a45 url('https://images.unsplash.com/photo-1622473596133-8b0c5a7c5c2b') center/cover;
-            margin: 15px auto;
+            background: #2e6b3f url('https://i.ibb.co/0qY0zqY/farm-background.jpg') center/cover;
+            margin: 20px auto;
             position: relative;
-            border: 12px solid #052b17;
-            border-radius: 15px;
+            border: 12px solid #1e4a2b;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
         }
-        #goal-image {
+        
+        .corn {
             position: absolute;
-            top: 45px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 520px;
-            height: 280px;
-            background: url('https://i.ibb.co/0jZ7v7Y/soccer-goal-professional.png') no-repeat center/contain;
-            z-index: 5;
-            pointer-events: none;
-        }
-        #goalkeeper {
-            position: absolute;
-            font-size: 110px;
-            top: 125px;
-            transition: left 0.3s ease;
-            z-index: 10;
-        }
-        #ball {
-            position: absolute;
-            font-size: 48px;
-            bottom: 75px;
-            left: 50%;
-            transform: translateX(-50%);
-            cursor: grab;
+            font-size: 60px;
+            cursor: pointer;
+            transition: all 0.3s;
             user-select: none;
-            z-index: 15;
         }
-        #power-bar {
-            position: absolute;
-            bottom: 35px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 220px;
-            height: 20px;
-            background: #333;
-            border: 3px solid white;
-            border-radius: 10px;
-            overflow: hidden;
+        
+        .corn:hover { transform: scale(1.3); }
+        .corn.ready { animation: shake 0.6s infinite alternate; }
+        
+        @keyframes shake {
+            from { transform: rotate(-8deg); }
+            to { transform: rotate(8deg); }
         }
-        #power {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(to right, #4caf50, #ffeb3b, #f44336);
-        }
-        .info {
-            font-size: 26px;
-            margin: 12px;
-        }
-        #message {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 50px;
-            font-weight: bold;
-            text-shadow: 0 0 20px black;
-            display: none;
-            z-index: 100;
-        }
+        
         button {
-            padding: 12px 26px;
+            padding: 14px 24px;
             margin: 10px;
-            font-size: 18px;
-            background: #d32f2f;
+            font-size: 1.1em;
+            background: #f4a261;
             color: white;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             cursor: pointer;
+        }
+        
+        button:hover {
+            background: #e76f51;
+            transform: translateY(-3px);
         }
     </style>
 </head>
 <body>
 
-    <h1>⚽ CHUTE AO GOL PROFISSIONAL ⚽</h1>
-    <div class="info">
-        Pênaltis: <strong id="penalties">0 / 5</strong> | 
-        Gols: <strong id="score">0</strong>
+    <h1>🌽 Colheita de Milho 🌽</h1>
+    
+    <div id="hud">
+        <div>Milhos Colhidos: <strong id="score">0</strong></div>
+        <div>Dinheiro: <strong>R$ <span id="money">0</span></strong></div>
+        <div>Velocidade: <strong id="level">1</strong></div>
     </div>
 
-    <div id="game">
-        <div id="goal-image"></div>
-        <div id="goalkeeper">🧤</div>
-        <div id="ball">⚽</div>
-        <div id="power-bar"><div id="power"></div></div>
-        <div id="message"></div>
-    </div>
+    <div id="game"></div>
 
-    <button onclick="resetGame()">🔄 Novo Jogo (5 Pênaltis)</button>
+    <div>
+        <button onclick="plantAll()">🌱 Plantar Todos</button>
+        <button onclick="sellAll()">💰 Vender Todos</button>
+        <button onclick="upgradeSpeed()">⚡ Melhorar Velocidade (R$ 80)</button>
+    </div>
 
     <script>
         let score = 0;
-        let penalties = 0;
-        let isDragging = false;
-        let startX, startY;
-        let gameActive = true;
+        let money = 120;
+        let growthSpeed = 3200;
+        let level = 1;
 
-        const ball = document.getElementById('ball');
-        const goalkeeper = document.getElementById('goalkeeper');
-        const message = document.getElementById('message');
+        const game = document.getElementById('game');
         const scoreEl = document.getElementById('score');
-        const penaltiesEl = document.getElementById('penalties');
-        const powerBar = document.getElementById('power');
+        const moneyEl = document.getElementById('money');
+        const levelEl = document.getElementById('level');
 
-        function moveGoalkeeper() {
-            const rand = Math.random();
-            if (rand < 0.33) goalkeeper.style.left = '24%';
-            else if (rand < 0.66) goalkeeper.style.left = '48%';
-            else goalkeeper.style.left = '72%';
+        function createCorn() {
+            game.innerHTML = '';
+            
+            for (let i = 0; i < 22; i++) {
+                const corn = document.createElement('div');
+                corn.className = 'corn';
+                corn.textContent = '🌱';
+                corn.style.left = Math.random() * 88 + '%';
+                corn.style.top = Math.random() * 80 + '%';
+                corn.dataset.stage = '0';
+                
+                corn.addEventListener('click', () => harvest(corn));
+                
+                game.appendChild(corn);
+                startGrowing(corn);
+            }
         }
 
-        function kickBall(dx, dy) {
-            if (!gameActive) return;
-            gameActive = false;
-            penalties++;
-            penaltiesEl.textContent = `${penalties} / 5`;
-
-            const powerLevel = Math.min(Math.sqrt(dx*dx + dy*dy) / 3.2, 100);
-            powerBar.style.width = powerLevel + '%';
-
-            const distance = Math.min(powerLevel * 2.9, 410);
-            const angle = Math.atan2(dy, dx);
-
-            const endX = Math.cos(angle) * distance;
-            const endY = -Math.abs(Math.sin(angle) * distance) - 130;
-
-            ball.style.transition = 'transform 1.1s cubic-bezier(0.25, 0.1, 0.25, 1)';
-            ball.style.transform = `translate(${endX}px, ${endY}px)`;
-
-            moveGoalkeeper();
+        function startGrowing(corn) {
+            setTimeout(() => {
+                if (corn.dataset.stage === '0') {
+                    corn.textContent = '🌿';
+                    corn.dataset.stage = '1';
+                }
+            }, growthSpeed * 0.55);
 
             setTimeout(() => {
-                const gkPos = goalkeeper.style.left;
-                let isGoal = powerLevel > 48;
-
-                if (gkPos.includes('24%') && endX < -70) isGoal = false;
-                if (gkPos.includes('72%') && endX > 70) isGoal = false;
-                if (gkPos.includes('48%') && Math.abs(endX) < 85 && Math.random() < 0.65) isGoal = false;
-
-                if (isGoal) {
-                    score++;
-                    scoreEl.textContent = score;
-                    message.textContent = "🥅 GOOOOL!!!";
-                    message.style.color = "#4caf50";
-                } else {
-                    message.textContent = "🧤 DEFENDEU!";
-                    message.style.color = "#ff9800";
+                if (corn.dataset.stage === '1') {
+                    corn.textContent = '🌽';
+                    corn.dataset.stage = '2';
+                    corn.classList.add('ready');
                 }
+            }, growthSpeed);
+        }
 
-                message.style.display = 'block';
+        function harvest(corn) {
+            if (corn.dataset.stage === '2') {
+                score++;
+                money += 22;
+                
+                scoreEl.textContent = score;
+                moneyEl.textContent = money;
 
+                corn.style.transform = 'scale(0)';
+                
                 setTimeout(() => {
-                    if (penalties >= 5) {
-                        alert(`🏁 Fim de jogo!\nVocê fez ${score} gols de 5 pênaltis!`);
-                        resetGame();
-                    } else {
-                        resetPositions();
-                    }
-                }, 1600);
-            }, 1100);
-        }
-
-        ball.addEventListener('mousedown', (e) => {
-            if (!gameActive) return;
-            isDragging = true;
-            startX = e.clientX;
-            startY = e.clientY;
-            ball.style.cursor = 'grabbing';
-        });
-
-        document.addEventListener('mouseup', (e) => {
-            if (!isDragging) return;
-            isDragging = false;
-            ball.style.cursor = 'grab';
-
-            const dx = e.clientX - startX;
-            const dy = e.clientY - startY;
-
-            if (Math.abs(dx) > 25 || Math.abs(dy) > 25) {
-                kickBall(dx, dy);
-            } else {
-                powerBar.style.width = '0%';
+                    corn.textContent = '🌱';
+                    corn.style.transform = 'scale(1)';
+                    corn.dataset.stage = '0';
+                    corn.classList.remove('ready');
+                    startGrowing(corn);
+                }, 350);
             }
-        });
-
-        function resetPositions() {
-            ball.style.transition = 'none';
-            ball.style.transform = 'translateX(-50%)';
-            goalkeeper.style.left = '48%';
-            message.style.display = 'none';
-            powerBar.style.width = '0%';
-            gameActive = true;
         }
 
-        function resetGame() {
-            score = 0;
-            penalties = 0;
-            scoreEl.textContent = 0;
-            penaltiesEl.textContent = '0 / 5';
-            resetPositions();
+        function plantAll() {
+            document.querySelectorAll('.corn').forEach(corn => {
+                if (corn.dataset.stage === '0') startGrowing(corn);
+            });
         }
 
-        window.onload = () => {
-            goalkeeper.style.left = '48%';
-        };
+        function sellAll() {
+            if (score > 0) {
+                const total = score * 22;
+                money += total;
+                moneyEl.textContent = money;
+                alert(`✅ Você vendeu ${score} milhos por R$ ${total}!`);
+                score = 0;
+                scoreEl.textContent = score;
+            }
+        }
+
+        function upgradeSpeed() {
+            if (money >= 80) {
+                money -= 80;
+                moneyEl.textContent = money;
+                growthSpeed = Math.max(900, growthSpeed - 550);
+                level++;
+                levelEl.textContent = level;
+                alert('🚀 Velocidade de crescimento aumentada!');
+            } else {
+                alert('Dinheiro insuficiente!');
+            }
+        }
+
+        // Iniciar o jogo
+        window.onload = createCorn;
     </script>
+
 </body>
 </html>
