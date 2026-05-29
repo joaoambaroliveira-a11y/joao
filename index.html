@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Luta HTML5</title>
+    <title>Jogo de Luta Arcade</title>
     <style>
         body {
             margin: 0;
-            background: #111;
+            background: #1a1a1a;
             color: white;
-            font-family: 'Courier New', Courier, monospace;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -19,211 +19,162 @@
         }
 
         #instrucoes {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             text-align: center;
             font-size: 14px;
-            background: #222;
-            padding: 10px;
-            border-radius: 5px;
+            background: #2a2a2a;
+            padding: 10px 20px;
+            border-radius: 8px;
             border: 1px solid #444;
+            line-height: 1.5;
         }
 
-        #container-jogo {
+        #arena {
             position: relative;
             width: 800px;
             height: 400px;
         }
 
-        /* Barras de Vida */
-        .interface {
+        /* Interface das Barras de Vida */
+        .hud {
             position: absolute;
             top: 20px;
             left: 0;
             right: 0;
             display: flex;
             justify-content: space-between;
-            padding: 0 40px;
+            padding: 0 30px;
             z-index: 10;
+            pointer-events: none;
         }
 
-        .container-vida {
-            width: 300px;
-            height: 30px;
-            background-color: #555;
-            border: 3px solid #fff;
-            position: relative;
+        .barra-container {
+            width: 320px;
+            height: 25px;
+            background-color: #444;
+            border: 2px solid #fff;
+            border-radius: 4px;
+            overflow: hidden;
         }
 
         .barra-vida {
             height: 100%;
             background-color: #ff3333;
             width: 100%;
-            transition: width 0.1s ease;
+            transition: width 0.1s ease-out;
         }
 
         #vida-p2 {
             float: right;
         }
 
-        /* Tela do Jogo */
+        /* Tela de Jogo (Canvas) */
         canvas {
-            background: linear-gradient(to bottom, #2c3e50, #000000);
-            border: 4px solid #fff;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            background: linear-gradient(to bottom, #2c3e50, #0f171e);
+            border: 3px solid #fff;
+            border-radius: 4px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        #tela-fim {
+        /* Tela de Fim de Jogo */
+        #fim-jogo {
             display: none;
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 40px;
-            font-weight: bold;
-            color: #ff3333;
-            text-shadow: 2px 2px #000;
             text-align: center;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 30px;
+            border-radius: 10px;
+            border: 2px solid #fff;
         }
-        
-        #botao-restart {
-            margin-top: 15px;
+
+        #fim-jogo h1 {
+            margin: 0 0 15px 0;
+            font-size: 32px;
+            color: #f1c40f;
+        }
+
+        #btn-reiniciar {
             padding: 10px 20px;
-            font-size: 18px;
+            font-size: 16px;
+            font-weight: bold;
             cursor: pointer;
-            background: #fff;
+            background-color: #fff;
             border: none;
-            font-family: inherit;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        #btn-reiniciar:hover {
+            background-color: #ddd;
         }
     </style>
 </head>
 <body>
 
     <div id="instrucoes">
-        <strong>Jogador 1 (Azul):</strong> A/D = Mover | ESPAÇO = Atacar <br>
-        <strong>Jogador 2 (Vermelho):</strong> Setas Esquerda/Direita = Mover | ENTER = Atacar
+        <strong>Jogador 1 (Azul):</strong> Teclas <b>A / D</b> movem | <b>ESPAÇO</b> ataca<br>
+        <strong>Jogador 2 (Vermelho):</strong> <b>Setas (Esq / Dir)</b> movem | <b>ENTER</b> ataca
     </div>
 
-    <div id="container-jogo">
-        <div class="interface">
+    <div id="arena">
+        <div class="hud">
             <div>
-                <div>JOGADOR 1</div>
-                <div class="container-vida"><div id="vida-p1" class="barra-vida"></div></div>
+                <div style="margin-bottom: 5px;">JOGADOR 1</div>
+                <div class="barra-container"><div id="vida-p1" class="barra-vida"></div></div>
             </div>
-            <div>
-                <div>JOGADOR 2</div>
-                <div class="container-vida"><div id="vida-p2" class="barra-vida"></div></div>
+            <div style="text-align: right;">
+                <div style="margin-bottom: 5px;">JOGADOR 2</div>
+                <div class="barra-container"><div id="vida-p2" class="barra-vida"></div></div>
             </div>
         </div>
         
-        <div id="tela-fim">
-            <span id="texto-vencedor"></span><br>
-            <button id="botao-restart" onclick="reiniciarJogo()">Jogar Novamente</button>
+        <div id="fim-jogo">
+            <h1 id="resultado"></h1>
+            <button id="btn-reiniciar" onclick="reiniciar()">Jogar de Novo</button>
         </div>
 
-        <canvas id="canvasJogo" width="800" height="400"></canvas>
+        <canvas id="telaLuta" width="800" height="400"></canvas>
     </div>
 
     <script>
-        const canvas = document.getElementById('canvasJogo');
+        const canvas = document.getElementById('telaLuta');
         const ctx = canvas.getContext('2d');
 
-        // Configurações básicas
         const gravidade = 0.6;
-        let jogoAtivo = true;
+        let partidaAtiva = true;
 
-        // Classes dos Lutadores
-        class Lutador {
-            constructor({ posicao, velocidade, cor, offsetAtalho }) {
-                this.posicao = posicao;
-                this.velocidade = velocidade;
-                this.width = 50;
-                this.height = 100;
+        class Personagem {
+            constructor({ x, cor, direcaoAtaque }) {
+                this.posicao = { x: x, y: 0 };
+                this.velocidade = { x: 0, y: 0 };
+                this.largura = 50;
+                this.altura = 110;
                 this.cor = cor;
                 this.vida = 100;
-                
-                // Caixa de ataque
-                this.caixaAtaque = {
-                    posicao: { x: this.posicao.x, y: this.posicao.y },
-                    offsetAtalho: offsetAtalho,
-                    width: 100,
-                    height: 50
-                };
                 this.estaAtacando = false;
+                
+                // Área do golpe (Ataque)
+                this.alcanceAtaque = {
+                    posicao: { x: this.posicao.x, y: this.posicao.y },
+                    offset: direcaoAtaque,
+                    largura: 90,
+                    altura: 40
+                };
             }
 
             desenhar() {
-                // Desenha o personagem
+                // Corpo do personagem
                 ctx.fillStyle = this.cor;
-                ctx.fillRect(this.posicao.x, this.posicao.y, this.width, this.height);
+                ctx.fillRect(this.posicao.x, this.posicao.y, this.largura, this.altura);
 
-                // Desenha o ataque (se estiver atacando)
+                // Efeito visual do golpe
                 if (this.estaAtacando) {
-                    ctx.fillStyle = 'yellow';
+                    ctx.fillStyle = '#f1c40f';
                     ctx.fillRect(
-                        this.caixaAtaque.posicao.x, 
-                        this.caixaAtaque.posicao.y, 
-                        this.caixaAtaque.width, 
-                        this.caixaAtaque.height
-                    );
-                }
-            }
-
-            atualizar() {
-                this.desenhar();
-                
-                // Atualiza posição da caixa de ataque baseada na direção do boneco
-                this.caixaAtaque.posicao.x = this.posicao.x + this.caixaAtaque.offsetAtalho.x;
-                this.caixaAtaque.posicao.y = this.posicao.y + 20;
-
-                // Movimento horizontal
-                this.posicao.x += this.velocidade.x;
-
-                // Limites da tela (paredes)
-                if (this.posicao.x < 0) this.posicao.x = 0;
-                if (this.posicao.x + this.width > canvas.width) this.posicao.x = canvas.width - this.width;
-
-                // Gravidade e chão
-                if (this.posicao.y + this.height + this.velocidade.y >= canvas.height - 20) {
-                    this.velocidade.y = 0;
-                    this.posicao.y = canvas.height - 20 - this.height; // Mantém no chão
-                } else {
-                    this.velocidade.y += gravidade;
-                }
-                this.posicao.y += this.velocidade.y;
-            }
-
-            atacar() {
-                if (!this.estaAtacando && jogoAtivo) {
-                    this.estaAtacando = true;
-                    setTimeout(() => {
-                        this.estaAtacando = false;
-                    }, 100); // O ataque dura 100 milissegundos
-                }
-            }
-        }
-
-        // Criando os jogadores
-        let p1 = new Lutador({
-            posicao: { x: 150, y: 0 },
-            velocidade: { x: 0, y: 0 },
-            cor: '#3498db',
-            offsetAtalho: { x: 0, y: 0 }
-        });
-
-        let p2 = new Lutador({
-            posicao: { x: 600, y: 0 },
-            velocidade: { x: 0, y: 0 },
-            cor: '#e74c3c',
-            offsetAtalho: { x: -50, y: 0 } // Ataca para o lado esquerdo por padrão
-        });
-
-        // Controle de teclas pressionadas
-        const teclas = {
-            a: { pressionada: false },
-            d: { pressionada: false },
-            ArrowLeft: { pressionada: false },
-            ArrowRight: { pressionada: false }
-        };
-
-        // Detecção de colisão (Hitbox)
-        function colisaoQuadrados({ quad1, quad2 }) {
+                        this.alcanceAtaque.posicao.x,
+                        this.alcanceAtaque.posicao.y,
+                        this.alcanceAtaque.largura,
+                        this.alcanceAtaque
