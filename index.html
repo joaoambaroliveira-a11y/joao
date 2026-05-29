@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚽ Chute ao Gol</title>
+    <title>⚽ Chute ao Gol Profissional</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,50 +18,51 @@
             text-shadow: 0 0 15px #ffeb3b;
         }
         #game {
-            width: 850px;
-            height: 480px;
-            background: #0f8f4a;
+            width: 880px;
+            height: 520px;
+            background: #0a7a45 url('https://images.unsplash.com/photo-1622473596133-8b0c5a7c5c2b') center/cover;
             margin: 15px auto;
             position: relative;
-            border: 10px solid #052b17;
+            border: 12px solid #052b17;
             border-radius: 15px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
-        #goal {
+        #goal-image {
             position: absolute;
-            top: 60px;
+            top: 45px;
             left: 50%;
             transform: translateX(-50%);
-            width: 460px;
-            height: 260px;
-            border: 14px solid white;
-            border-top: none;
+            width: 520px;
+            height: 280px;
+            background: url('https://i.ibb.co/0jZ7v7Y/soccer-goal-professional.png') no-repeat center/contain;
+            z-index: 5;
+            pointer-events: none;
         }
         #goalkeeper {
             position: absolute;
             font-size: 110px;
-            top: 120px;
+            top: 125px;
             transition: left 0.3s ease;
             z-index: 10;
         }
         #ball {
             position: absolute;
             font-size: 48px;
-            bottom: 70px;
+            bottom: 75px;
             left: 50%;
             transform: translateX(-50%);
             cursor: grab;
             user-select: none;
-            transition: none;
+            z-index: 15;
         }
         #power-bar {
             position: absolute;
-            bottom: 30px;
+            bottom: 35px;
             left: 50%;
             transform: translateX(-50%);
-            width: 200px;
-            height: 18px;
+            width: 220px;
+            height: 20px;
             background: #333;
             border: 3px solid white;
             border-radius: 10px;
@@ -71,7 +72,6 @@
             height: 100%;
             width: 0%;
             background: linear-gradient(to right, #4caf50, #ffeb3b, #f44336);
-            transition: width 0.05s;
         }
         .info {
             font-size: 26px;
@@ -82,14 +82,14 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            font-size: 48px;
+            font-size: 50px;
             font-weight: bold;
             text-shadow: 0 0 20px black;
             display: none;
             z-index: 100;
         }
         button {
-            padding: 12px 24px;
+            padding: 12px 26px;
             margin: 10px;
             font-size: 18px;
             background: #d32f2f;
@@ -102,15 +102,15 @@
 </head>
 <body>
 
-    <h1>⚽ CHUTE AO GOL ⚽</h1>
+    <h1>⚽ CHUTE AO GOL PROFISSIONAL ⚽</h1>
     <div class="info">
         Pênaltis: <strong id="penalties">0 / 5</strong> | 
         Gols: <strong id="score">0</strong>
     </div>
 
     <div id="game">
-        <div id="goal"></div>
-        <div id="goalkeeper">🧤</div>   <!-- Goleiro melhorado -->
+        <div id="goal-image"></div>
+        <div id="goalkeeper">🧤</div>
         <div id="ball">⚽</div>
         <div id="power-bar"><div id="power"></div></div>
         <div id="message"></div>
@@ -134,13 +134,9 @@
 
         function moveGoalkeeper() {
             const rand = Math.random();
-            if (rand < 0.33) {
-                goalkeeper.style.left = '22%';     // Esquerda
-            } else if (rand < 0.66) {
-                goalkeeper.style.left = '48%';     // Meio
-            } else {
-                goalkeeper.style.left = '73%';     // Direita
-            }
+            if (rand < 0.33) goalkeeper.style.left = '24%';
+            else if (rand < 0.66) goalkeeper.style.left = '48%';
+            else goalkeeper.style.left = '72%';
         }
 
         function kickBall(dx, dy) {
@@ -152,27 +148,26 @@
             const powerLevel = Math.min(Math.sqrt(dx*dx + dy*dy) / 3.2, 100);
             powerBar.style.width = powerLevel + '%';
 
-            const distance = Math.min(powerLevel * 2.9, 390);
+            const distance = Math.min(powerLevel * 2.9, 410);
             const angle = Math.atan2(dy, dx);
 
             const endX = Math.cos(angle) * distance;
-            const endY = -Math.abs(Math.sin(angle) * distance) - 110;
+            const endY = -Math.abs(Math.sin(angle) * distance) - 130;
 
-            ball.style.transition = 'transform 1.05s cubic-bezier(0.25, 0.1, 0.25, 1)';
+            ball.style.transition = 'transform 1.1s cubic-bezier(0.25, 0.1, 0.25, 1)';
             ball.style.transform = `translate(${endX}px, ${endY}px)`;
 
             moveGoalkeeper();
 
             setTimeout(() => {
                 const gkPos = goalkeeper.style.left;
-                let isGoal = true;
+                let isGoal = powerLevel > 48;
 
-                // Lógica de defesa
-                if (gkPos.includes('22%') && endX < -60) isGoal = false;
-                if (gkPos.includes('73%') && endX > 60) isGoal = false;
-                if (gkPos.includes('48%') && Math.abs(endX) < 80 && Math.random() < 0.6) isGoal = false;
+                if (gkPos.includes('24%') && endX < -70) isGoal = false;
+                if (gkPos.includes('72%') && endX > 70) isGoal = false;
+                if (gkPos.includes('48%') && Math.abs(endX) < 85 && Math.random() < 0.65) isGoal = false;
 
-                if (isGoal && powerLevel > 45) {
+                if (isGoal) {
                     score++;
                     scoreEl.textContent = score;
                     message.textContent = "🥅 GOOOOL!!!";
@@ -186,16 +181,15 @@
 
                 setTimeout(() => {
                     if (penalties >= 5) {
-                        alert(`🏁 Fim de jogo! Você fez ${score} gols de 5 pênaltis!`);
+                        alert(`🏁 Fim de jogo!\nVocê fez ${score} gols de 5 pênaltis!`);
                         resetGame();
                     } else {
                         resetPositions();
                     }
                 }, 1600);
-            }, 1050);
+            }, 1100);
         }
 
-        // Arrastar a bola
         ball.addEventListener('mousedown', (e) => {
             if (!gameActive) return;
             isDragging = true;
