@@ -1,82 +1,89 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <title>Jogo de Fazendinha</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #c8f7c5;
-    }
-    #fazenda {
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-      gap: 40px;
-      margin-top: 20px;
-    }
-    #campo {
-      display: grid;
-      grid-template-columns: repeat(5, 80px);
-      grid-gap: 10px;
-    }
-    .terra {
-      width: 80px;
-      height: 80px;
-      background-color: #8B4513;
-      border: 2px solid #333;
-      cursor: pointer;
-    }
-    .plantado {
-      background-color: green;
-    }
-    .colhido {
-      background-color: yellow;
-    }
-    /* Casinha realista */
-    #casa img {
-      width: 200px;
-      height: auto;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    }
-  </style>
-</head>
-<body>
-  <h1>🌾 Jogo de Fazendinha 🌾</h1>
-  <p>Clique na terra para plantar. Clique novamente para colher!</p>
-  <div id="fazenda">
-    <div id="campo"></div>
-    <div id="casa">
-      <img src="imagem/casinha.png" alt="Casinha de fazenda realista">
-    </div>
-  </div>
-  <p>Pontos: <span id="pontos">0</span></p>
+-- === CONFIGURAÇÃO ===
+local milhoItem = "milho"           -- Item que o jogador recebe ao colher
+local quantidadePorColheita = 8     -- Quantidade de milho por planta
+local tempoCrescimento = 60         -- Tempo em segundos para crescer (60 = 1 minuto)
 
-  <script>
-    const campo = document.getElementById("campo");
-    const pontosEl = document.getElementById("pontos");
-    let pontos = 0;
+ESX = exports["es_extended"]:getSharedObject() -- ou QBCore se for QBCore
 
-    for (let i = 0; i < 25; i++) {
-      const terra = document.createElement("div");
-      terra.classList.add("terra");
-      terra.addEventListener("click", () => {
-        if (!terra.classList.contains("plantado")) {
-          terra.classList.add("plantado");
-        } else if (terra.classList.contains("plantado")) {
-          terra.classList.remove("plantado");
-          terra.classList.add("colhido");
-          pontos += 10;
-          pontosEl.textContent = pontos;
-        } else if (terra.classList.contains("colhido")) {
-          terra.classList.remove("colhido");
-        }
-      });
-      campo.appendChild(terra);
-    }
-  </script>
+-- Coordenadas das plantas (você pode adicionar várias)
+local plantasMilho = {
+    vector3(1234.56, -4321.09, 30.0),
+    vector3(1240.12, -4318.45, 30.0),
+    -- Adicione mais aqui...
+}
 
-</body>
-</html>
+local plantasPlantadas = {} -- Armazena plantas plantadas
+
+-- ===================== COMANDO PARA PLANTAR =====================
+RegisterCommand('plantarmilho', function(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local ped = GetPlayerPed(source)
+    local coords = GetEntityCoords(ped)
+
+    for _, plantCoord in pairs(plantasMilho) do
+        if #(coords - plantCoord) < 3.0 then
+            if xPlayer.getInventoryItem('semente_milho').count >= 1 then
+                xPlayer.removeInventoryItem('semente_milho', 1)
+                
+                plantasPlantadas[plantCoord] = {
+                    tempoPlantado = GetGameTimer(),
+                    coords = plantCoord
+                }
+                
+                TriggerClientEvent('ox_lib:notify', source, {
+                    title = 'Plantação',
+                    description = 'Milho plantado! Espere crescer...',
+                    type = 'success'
+                })
+                return
+            else
+                TriggerClientEvent('ox_lib:notify', source, {description = 'Você não tem semente de milho!', type = 'error'})
+                return
+            end
+        end
+    end
+end)
+
+-- ===================== COLHER =====================
+RegisterNetEvent('colherMilho')
+AddEventHandler('colherMilho', function(plantCoord)
+    local source = source
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local plant = plantasPlantadas[plantCoord]
+
+    if plant and (GetGameTimer() - plant.tempoPlantado) >= (tempoCrescimento * 1000) then
+        xPlayer.addInventoryItem(milhoItem, quantidadePorColheita)
+        
+        TriggerClientEvent('ox_lib:notify', source, {
+            title = 'Colheita',
+            description = 'Você colheu '..quantidadePorColheita..' milhos!',
+            type = 'success'
+        })
+        
+        plantasPlantadas[plantCoord] = nil -- Remove a planta
+    else
+        TriggerClientEvent('ox_lib:notify', source, {description = 'O milho ainda não cresceu!', type = 'error'})
+    end
+end)
+
+-- ===================== VENDER =====================
+RegisterNetEvent('venderMilho')
+AddEventHandler('venderMilho', function()
+    local source = source
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local qtdMilho = xPlayer.getInventoryItem(milhoItem).count
+
+    if qtdMilho > 0 then
+        local pagamento = qtdMilho * 12  -- R$12 por milho
+        xPlayer.removeInventoryItem(milhoItem, qtdMilho)
+        xPlayer.addMoney(pagamento)
+        
+        TriggerClientEvent('ox_lib:notify', source, {
+            title = 'Venda',
+            description = 'Você vendeu '..qtdMilho..' milhos por R$'..pagamento,
+            type = 'success'
+        })
+    else
+        TriggerClientEvent('ox_lib:notify', source, {description = 'Você não tem milho!', type = 'error'})
+    end
+end)
