@@ -2,48 +2,80 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Plantação de Milho Realista</title>
+  <title>Jogo de Fazendinha</title>
   <style>
     body {
-      background-color: #e8f5e9;
       font-family: Arial, sans-serif;
       text-align: center;
-      margin: 0;
-      padding: 20px;
+      background-color: #c8f7c5;
     }
-    h1 {
-      color: #2e7d32;
-      text-shadow: 1px 1px 2px #a5d6a7;
+    #fazenda {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 40px;
+      margin-top: 20px;
     }
-    .campo {
-      position: relative;
-      display: inline-block;
-      perspective: 1000px;
+    #campo {
+      display: grid;
+      grid-template-columns: repeat(5, 80px);
+      grid-gap: 10px;
     }
-    .milho {
-      width: 800px;
+    .terra {
+      width: 80px;
+      height: 80px;
+      background-color: #8B4513;
+      border: 2px solid #333;
+      cursor: pointer;
+    }
+    .plantado {
+      background-color: green;
+    }
+    .colhido {
+      background-color: yellow;
+    }
+    /* Casinha realista */
+    #casa img {
+      width: 200px;
       height: auto;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
-      transform: rotateX(10deg);
-      transition: transform 0.5s ease;
-    }
-    .milho:hover {
-      transform: rotateX(0deg) scale(1.05);
-    }
-    p {
-      color: #4e342e;
-      font-size: 1.1em;
-      margin-top: 15px;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
   </style>
 </head>
 <body>
-  <h1>Plantação de Milho em 3D Realista</h1>
-  <div class="campo">
-    <img src="URL_DA_IMAGEM_AQUI" alt="Plantação de milho realista" class="milho">
+  <h1>🌾 Jogo de Fazendinha 🌾</h1>
+  <p>Clique na terra para plantar. Clique novamente para colher!</p>
+  <div id="fazenda">
+    <div id="campo"></div>
+    <div id="casa">
+      <img src="casinha_fazenda.jpg" alt="Casinha de fazenda realista">
+    </div>
   </div>
-  <p>Visualização realista da plantação de milho com profundidade e textura natural.</p>
+  <p>Pontos: <span id="pontos">0</span></p>
+
+  <script>
+    const campo = document.getElementById("campo");
+    const pontosEl = document.getElementById("pontos");
+    let pontos = 0;
+
+    for (let i = 0; i < 25; i++) {
+      const terra = document.createElement("div");
+      terra.classList.add("terra");
+      terra.addEventListener("click", () => {
+        if (!terra.classList.contains("plantado")) {
+          terra.classList.add("plantado");
+        } else if (terra.classList.contains("plantado")) {
+          terra.classList.remove("plantado");
+          terra.classList.add("colhido");
+          pontos += 10;
+          pontosEl.textContent = pontos;
+        } else if (terra.classList.contains("colhido")) {
+          terra.classList.remove("colhido");
+        }
+      });
+      campo.appendChild(terra);
+    }
+  </script>
 </body>
 </html>
