@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Estacionamento - Mais Carros</title>
+    <title>Desafio de Estacionamento - Múltiplos Carros</title>
     <style>
         body {
             margin: 0;
@@ -19,7 +19,13 @@
         }
 
         h1 {
+            margin-bottom: 5px;
+        }
+
+        #scoreBoard {
+            font-size: 18px;
             margin-bottom: 10px;
+            color: #ffb300;
         }
 
         /* Área do Jogo */
@@ -32,19 +38,17 @@
             overflow: hidden;
         }
 
-        /* Obstáculos Gerais (Paredes e Outros Carros) */
+        /* Obstáculos */
         .obstacle {
             position: absolute;
             box-sizing: border-box;
         }
 
-        /* Paredes de concreto */
         .wall {
             background-color: #777;
             border: 2px solid #555;
         }
 
-        /* Outros carros estacionados */
         .parked-car {
             border-radius: 4px;
             border: 1px solid rgba(0,0,0,0.3);
@@ -57,7 +61,7 @@
             height: 40px;
             left: 500px;
             top: 40px;
-            background-color: rgba(255, 235, 59, 0.6);
+            background-color: rgba(255, 235, 59, 0.4);
             border: 2px dashed #fbc02d;
             box-sizing: border-box;
             display: flex;
@@ -73,7 +77,7 @@
             position: absolute;
             width: 40px;
             height: 25px;
-            background-color: #e53935;
+            background-color: #e53935; /* Cor inicial */
             border-radius: 4px;
             left: 50px;
             top: 300px;
@@ -81,7 +85,7 @@
             z-index: 10;
         }
 
-        /* Faróis do Carro do Jogador */
+        /* Faróis do Carro */
         #car::after {
             content: '';
             position: absolute;
@@ -109,27 +113,39 @@
 </head>
 <body>
 
-    <h1>Estacione o Carro!</h1>
+    <h1>Manobrista Profissional</h1>
+    <div id="scoreBoard">Carros Estacionados: <span id="count">0</span> / 3</div>
+
     <div id="gameArea">
         <div id="parkingSpot">VAGA</div>
         
         <div class="obstacle wall" style="width: 200px; height: 30px; left: 0; top: 150px;"></div>
         <div class="obstacle wall" style="width: 40px; height: 150px; left: 280px; top: 250px;"></div>
 
-        <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 430px; top: 47px; background-color: #1e88e5;"></div> <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 500px; top: 140px; background-color: #43a047;"></div> <div class="obstacle parked-car" style="width: 25px; height: 40px; left: 180px; top: 280px; background-color: #8e24aa;"></div> <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 400px; top: 280px; background-color: #ffb300;"></div> <div id="car"></div>
+        <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 430px; top: 47px; background-color: #555;"></div> 
+        <div class="obstacle parked-car" style="width: 25px; height: 40px; left: 180px; top: 280px; background-color: #6a1b9a;"></div> 
+
+        <div id="car"></div>
     </div>
 
-    <div id="message">Use as setas para dirigir!</div>
-    <p>Cuidado para não bater nos carros estacionados e nas paredes!</p>
+    <div id="message">Estacione o 1º carro (Vermelho)!</div>
+    <p>Use as setas do teclado para dirigir.</p>
 
     <script>
         const car = document.getElementById('car');
         const gameArea = document.getElementById('gameArea');
         const spot = document.getElementById('parkingSpot');
         const message = document.getElementById('message');
+        const countDisplay = document.getElementById('count');
         const obstacles = document.querySelectorAll('.obstacle');
 
-        // Configurações do carro
+        // Configuração da Fila de Carros
+        // Cada cor representa um "nível/carro" diferente que você assume
+        const listaCarros = ["#e53935", "#1e88e5", "#43a047"]; // Vermelho, Azul, Verde
+        let carroAtual Index = 0;
+        let jogoConcluido = false;
+
+        // Física do carro
         let carX = 50;
         let carY = 300;
         let angle = 0;
@@ -143,6 +159,8 @@
         window.addEventListener('keyup', (e) => { keys[e.key] = false; });
 
         function gameLoop() {
+            if (jogoConcluido) return;
+
             // Movimentação
             if (keys['ArrowUp']) {
                 speed = Math.min(speed + 0.2, maxSpeed);
@@ -176,30 +194,53 @@
             const areaRect = gameArea.getBoundingClientRect();
             const spotRect = spot.getBoundingClientRect();
 
-            // Colisão com as bordas
+            // Colisão com bordas
             if (carRect.left < areaRect.left || carRect.right > areaRect.right ||
                 carRect.top < areaRect.top || carRect.bottom > areaRect.bottom) {
                 resetarCarro("Você bateu na borda!");
                 return;
             }
 
-            // Colisão com obstáculos (paredes E outros carros)
+            // Colisão com obstáculos
             obstacles.forEach(obs => {
                 const obsRect = obs.getBoundingClientRect();
                 if (!(carRect.right < obsRect.left || 
                       carRect.left > obsRect.right || 
                       carRect.bottom < obsRect.top || 
                       carRect.top > obsRect.bottom)) {
-                    resetarCarro("Você bateu em um obstáculo!");
+                    resetarCarro("Você bateu!");
                 }
             });
 
-            // Checar vitória
+            // Checar se o carro atual entrou na vaga
             if (!(carRect.right < spotRect.left || 
                   carRect.left > spotRect.right || 
                   carRect.bottom < spotRect.top || 
                   carRect.top > spotRect.bottom)) {
-                message.innerText = "Boa! Estacionou sem arranhar os outros carros! 🎉";
+                
+                proximoCarro();
+            }
+        }
+
+        function proximoCarro() {
+            carroAtualIndex++;
+            countDisplay.innerText = carroAtualIndex;
+
+            if (carroAtualIndex < listaCarros.length) {
+                // Configura o visual do próximo carro da fila
+                car.style.backgroundColor = listaCarros[carroAtualIndex];
+                message.innerText = `Boa! Agora estacione o próximo carro!`;
+                message.style.color = "#4caf50";
+                
+                // Recarrega o carro na posição inicial
+                carX = 50;
+                carY = 300;
+                angle = 0;
+                speed = 0;
+            } else {
+                // Se terminou todos os carros
+                jogoConcluido = true;
+                message.innerText = "Sensacional! Todos os carros foram estacionados! 🏆 🎉";
                 message.style.color = "#4caf50";
                 speed = 0;
             }
