@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jogo de Estacionamento</title>
+    <title>Jogo de Estacionamento - Mais Carros</title>
     <style>
         body {
             margin: 0;
@@ -32,11 +32,22 @@
             overflow: hidden;
         }
 
-        /* Obstáculos / Paredes */
+        /* Obstáculos Gerais (Paredes e Outros Carros) */
         .obstacle {
             position: absolute;
+            box-sizing: border-box;
+        }
+
+        /* Paredes de concreto */
+        .wall {
             background-color: #777;
             border: 2px solid #555;
+        }
+
+        /* Outros carros estacionados */
+        .parked-car {
+            border-radius: 4px;
+            border: 1px solid rgba(0,0,0,0.3);
         }
 
         /* Vaga de Estacionamento */
@@ -57,7 +68,7 @@
             color: #fff;
         }
 
-        /* O Carro */
+        /* O Carro do Jogador */
         #car {
             position: absolute;
             width: 40px;
@@ -67,9 +78,10 @@
             left: 50px;
             top: 300px;
             transition: transform 0.1s;
+            z-index: 10;
         }
 
-        /* Faróis do Carro */
+        /* Faróis do Carro do Jogador */
         #car::after {
             content: '';
             position: absolute;
@@ -101,15 +113,14 @@
     <div id="gameArea">
         <div id="parkingSpot">VAGA</div>
         
-        <div class="obstacle" style="width: 200px; height: 40px; left: 0; top: 150px;"></div>
-        <div class="obstacle" style="width: 200px; height: 40px; left: 400px; top: 150px;"></div>
-        <div class="obstacle" style="width: 40px; height: 150px; left: 280px; top: 250px;"></div>
+        <div class="obstacle wall" style="width: 200px; height: 30px; left: 0; top: 150px;"></div>
+        <div class="obstacle wall" style="width: 40px; height: 150px; left: 280px; top: 250px;"></div>
 
-        <div id="car"></div>
+        <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 430px; top: 47px; background-color: #1e88e5;"></div> <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 500px; top: 140px; background-color: #43a047;"></div> <div class="obstacle parked-car" style="width: 25px; height: 40px; left: 180px; top: 280px; background-color: #8e24aa;"></div> <div class="obstacle parked-car" style="width: 40px; height: 25px; left: 400px; top: 280px; background-color: #ffb300;"></div> <div id="car"></div>
     </div>
 
     <div id="message">Use as setas para dirigir!</div>
-    <p>Evite as paredes cinzas e as bordas.</p>
+    <p>Cuidado para não bater nos carros estacionados e nas paredes!</p>
 
     <script>
         const car = document.getElementById('car');
@@ -118,7 +129,7 @@
         const message = document.getElementById('message');
         const obstacles = document.querySelectorAll('.obstacle');
 
-        // Posição inicial e física simples do carro
+        // Configurações do carro
         let carX = 50;
         let carY = 300;
         let angle = 0;
@@ -126,42 +137,31 @@
         
         const maxSpeed = 4;
         const turnSpeed = 5;
-
-        // Controle de teclas pressionadas
         const keys = {};
 
-        window.addEventListener('keydown', (e) => {
-            keys[e.key] = true;
-        });
+        window.addEventListener('keydown', (e) => { keys[e.key] = true; });
+        window.addEventListener('keyup', (e) => { keys[e.key] = false; });
 
-        window.addEventListener('keyup', (e) => {
-            keys[e.key] = false;
-        });
-
-        // Função principal de atualização do jogo (Loop)
         function gameLoop() {
-            // Acelerar / Dar ré
+            // Movimentação
             if (keys['ArrowUp']) {
                 speed = Math.min(speed + 0.2, maxSpeed);
             } else if (keys['ArrowDown']) {
                 speed = Math.max(speed - 0.2, -maxSpeed * 0.6);
             } else {
-                speed *= 0.9; // Desaceleração gradual (atrito)
+                speed *= 0.9;
             }
 
-            // Virar para os lados (só vira se o carro estiver se movendo)
             if (Math.abs(speed) > 0.2) {
                 const direction = speed > 0 ? 1 : -1;
                 if (keys['ArrowLeft']) angle -= turnSpeed * direction;
                 if (keys['ArrowRight']) angle += turnSpeed * direction;
             }
 
-            // Calcular próxima posição baseada no ângulo matemático
             const radians = angle * (Math.PI / 180);
             carX += speed * Math.cos(radians);
             carY += speed * Math.sin(radians);
 
-            // Aplicar posição e rotação visualmente
             car.style.left = carX + 'px';
             car.style.top = carY + 'px';
             car.style.transform = `rotate(${angle}deg)`;
@@ -171,42 +171,40 @@
             requestAnimationFrame(gameLoop);
         }
 
-        // Função para detectar colisões
         function checarColisoes() {
             const carRect = car.getBoundingClientRect();
             const areaRect = gameArea.getBoundingClientRect();
             const spotRect = spot.getBoundingClientRect();
 
-            // 1. Colisão com as bordas do cenário
+            // Colisão com as bordas
             if (carRect.left < areaRect.left || carRect.right > areaRect.right ||
                 carRect.top < areaRect.top || carRect.bottom > areaRect.bottom) {
                 resetarCarro("Você bateu na borda!");
                 return;
             }
 
-            // 2. Colisão com os obstáculos cinzas
+            // Colisão com obstáculos (paredes E outros carros)
             obstacles.forEach(obs => {
                 const obsRect = obs.getBoundingClientRect();
                 if (!(carRect.right < obsRect.left || 
                       carRect.left > obsRect.right || 
                       carRect.bottom < obsRect.top || 
                       carRect.top > obsRect.bottom)) {
-                    resetarCarro("Você bateu no obstáculo!");
+                    resetarCarro("Você bateu em um obstáculo!");
                 }
             });
 
-            // 3. Checar se conseguiu estacionar na vaga
+            // Checar vitória
             if (!(carRect.right < spotRect.left || 
                   carRect.left > spotRect.right || 
                   carRect.bottom < spotRect.top || 
                   carRect.top > spotRect.bottom)) {
-                message.innerText = "Parabéns! Você estacionou perfeitamente! 🎉";
+                message.innerText = "Boa! Estacionou sem arranhar os outros carros! 🎉";
                 message.style.color = "#4caf50";
                 speed = 0;
             }
         }
 
-        // Reseta a posição do carro se bater
         function resetarCarro(texto) {
             message.innerText = texto + " Tente novamente.";
             message.style.color = "#e53935";
@@ -216,7 +214,6 @@
             speed = 0;
         }
 
-        // Inicia o jogo
         gameLoop();
     </script>
 </body>
