@@ -1,103 +1,96 @@
-const emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"];
+// script.js - JavaScript da Calculadora de IMC
+// Este arquivo contém toda a lógica interativa da página HTML
 
-let saldo = 500;
-let aposta = 10;
-let banca = 10000;
+// =============================================
+// Aguarda o carregamento completo da página
+// =============================================
 
-const reel1 = document.getElementById('reel1');
-const reel2 = document.getElementById('reel2');
-const reel3 = document.getElementById('reel3');
-const saldoEl = document.getElementById('saldo');
-const apostaEl = document.getElementById('aposta');
-const resultEl = document.getElementById('result');
-const spinBtn = document.getElementById('spinBtn');
+// Seleciona o formulário pelo seu ID
+const form = document.getElementById('imcForm');
 
-// Atualiza tela
-function atualizarTela() {
-    saldoEl.textContent = saldo.toFixed(2);
-    apostaEl.textContent = aposta.toFixed(2);
-}
+// Seleciona a div onde o resultado será exibido
+const resultadoDiv = document.getElementById('resultado');
 
-// Gira os rolos com animação
-function girarRolos() {
-    const reels = [reel1, reel2, reel3];
+// Adiciona um ouvinte de evento para quando o formulário for enviado
+form.addEventListener('submit', function(e) {
     
-    reels.forEach(reel => {
-        reel.classList.add('spinning');
-    });
-
-    setTimeout(() => {
-        const resultado = [
-            emojis[Math.floor(Math.random() * emojis.length)],
-            emojis[Math.floor(Math.random() * emojis.length)],
-            emojis[Math.floor(Math.random() * emojis.length)]
-        ];
-
-        reel1.textContent = resultado[0];
-        reel2.textContent = resultado[1];
-        reel3.textContent = resultado[2];
-
-        reels.forEach(reel => reel.classList.remove('spinning'));
-
-        verificarResultado(resultado);
-    }, 1800);
-}
-
-// Verifica resultado
-function verificarResultado(resultado) {
-    const tigraoCount = resultado.filter(r => r === "🐅").length;
+    // Impede o comportamento padrão do formulário (recarregar a página)
+    e.preventDefault();
     
-    if (tigraoCount >= 1) {
-        const ganho = Math.floor(Math.random() * 901) + 100; // 100 a 1000
-        saldo += ganho;
-        banca -= ganho;
-        resultEl.innerHTML = `🎉 TIGRAÇO! + R$ ${ganho}`;
-        resultEl.classList.add('win');
-        
-        // Aumenta aposta automaticamente após vitória
-        if (aposta < 200) aposta += 10;
+    // =============================================
+    // Captura os valores digitados pelo usuário
+    // =============================================
+    
+    // Pega o valor do campo peso e converte para número decimal
+    const peso = parseFloat(document.getElementById('peso').value);
+    
+    // Pega o valor do campo altura e converte para número decimal
+    const altura = parseFloat(document.getElementById('altura').value);
+    
+    // =============================================
+    // Validação dos dados inseridos
+    // =============================================
+    
+    // Verifica se o peso ou altura são inválidos ou se altura é zero/negativa
+    if (!peso || !altura || altura <= 0) {
+        // Mostra mensagem de erro em vermelho
+        resultadoDiv.innerHTML = `
+            <span style="color: red; font-weight: bold;">
+                Por favor, insira valores válidos.
+            </span>`;
+        return; // Interrompe a execução da função
+    }
+    
+    // =============================================
+    // Cálculo do IMC
+    // =============================================
+    
+    // Calcula o IMC: peso / (altura × altura)
+    const imc = peso / (altura * altura);
+    
+    // =============================================
+    // Classificação do IMC conforme OMS
+    // =============================================
+    
+    let classificacao = ''; // Variável para guardar a classificação
+    
+    if (imc < 18.5) {
+        classificacao = 'Abaixo do peso';
+    } 
+    else if (imc < 25) {
+        classificacao = 'Peso normal';
+    } 
+    else if (imc < 30) {
+        classificacao = 'Sobrepeso';
+    } 
+    else if (imc < 35) {
+        classificacao = 'Obesidade grau I';
+    } 
+    else if (imc < 40) {
+        classificacao = 'Obesidade grau II';
+    } 
+    else {
+        classificacao = 'Obesidade grau III (mórbida)';
+    }
+    
+    // =============================================
+    // Exibição do resultado na tela
+    // =============================================
+    
+    // Insere o resultado formatado na div
+    resultadoDiv.innerHTML = `
+        <strong>Seu IMC é: ${imc.toFixed(2)}</strong><br><br>
+        Classificação: <strong>${classificacao}</strong>
+    `;
+    
+    // Opcional: Adiciona cor conforme a classificação (melhora visual)
+    if (imc < 18.5) {
+        resultadoDiv.style.color = '#2196F3';        // Azul
+    } else if (imc < 25) {
+        resultadoDiv.style.color = '#4CAF50';        // Verde
+    } else if (imc < 30) {
+        resultadoDiv.style.color = '#FF9800';        // Laranja
     } else {
-        saldo -= aposta;
-        banca += aposta;
-        resultEl.textContent = "😢 Sem Tigrão...";
-        resultEl.classList.remove('win');
-    }
-
-    atualizarTela();
-
-    // Fim de jogo
-    if (saldo < aposta) {
-        setTimeout(() => {
-            alert("💸 Saldo insuficiente! Fim de jogo.");
-        }, 500);
-    }
-}
-
-// Eventos dos botões
-spinBtn.addEventListener('click', () => {
-    if (saldo < aposta) {
-        alert("Saldo insuficiente!");
-        return;
-    }
-    resultEl.textContent = "";
-    resultEl.classList.remove('win');
-    girarRolos();
-});
-
-// Botões de aposta
-document.getElementById('aumentar').addEventListener('click', () => {
-    if (aposta + 10 <= saldo) {
-        aposta += 10;
-        apostaEl.textContent = aposta.toFixed(2);
+        resultadoDiv.style.color = '#f44336';        // Vermelho
     }
 });
-
-document.getElementById('diminuir').addEventListener('click', () => {
-    if (aposta > 10) {
-        aposta -= 10;
-        apostaEl.textContent = aposta.toFixed(2);
-    }
-});
-
-// Inicializa
-atualizarTela();
