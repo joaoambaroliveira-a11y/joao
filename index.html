@@ -1,264 +1,161 @@
 <!DOCTYPE html>
+<!-- index.html - Calculadora de IMC com HTML, CSS e JavaScript -->
+
+<!-- Tag raiz do documento HTML -->
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>🐅 JOGO DO TIGRÃO 🐅</title>
-  <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    body {
-        font-family: 'Arial', sans-serif;
-        background: linear-gradient(135deg, #0f0c0a, #3a1f0f);
-        color: #ffd700;
-        min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 10px;
-        overflow: hidden;
-    }
-
-    .container {
-        width: 100%;
-        max-width: 440px;
-        background: #1a1108;
-        border: 8px solid #d4a017;
-        border-radius: 25px;
-        overflow: hidden;
-        box-shadow: 0 0 40px rgba(212, 160, 23, 0.8);
-        position: relative;
-    }
-
-    .header {
-        background: linear-gradient(#b8860b, #8b5a00);
-        padding: 15px;
-        text-align: center;
-        border-bottom: 5px solid #ffd700;
-    }
-
-    .mode-selector {
-        display: flex;
-        background: #2a1a0f;
-        padding: 8px;
-        gap: 5px;
-    }
-
-    .mode-btn {
-        flex: 1;
-        padding: 10px;
-        border: none;
-        border-radius: 8px;
-        font-weight: bold;
-        cursor: pointer;
-        transition: 0.3s;
-    }
-
-    .mode-btn.active {
-        background: #ffd700;
-        color: #000;
-    }
-
-    .reels {
-        background: #000;
-        padding: 25px 20px;
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        border-bottom: 5px solid #d4a017;
-    }
-
-    .reel {
-        width: 95px;
-        height: 115px;
-        background: #111;
-        border: 5px solid #ffd700;
-        border-radius: 15px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 58px;
-        box-shadow: inset 0 0 20px rgba(0,0,0,0.9);
-        transition: all 0.4s;
-    }
-
-    .reel.win-glow {
-        border-color: #ffff00;
-        box-shadow: 0 0 25px #ffff00, 0 0 45px #ff00ff, 0 0 65px #00ffff;
-        animation: neonPulse 0.7s infinite alternate;
-    }
-
-    @keyframes neonPulse {
-        from { box-shadow: 0 0 20px #ffff00, 0 0 40px #ff00ff; }
-        to { box-shadow: 0 0 30px #ffff00, 0 0 60px #ff00ff, 0 0 80px #00ffff; }
-    }
-
-    .info {
-        padding: 15px 20px;
-        background: #2a1a0f;
-        text-align: center;
-    }
-
-    .controls {
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .btn {
-        padding: 15px;
-        font-size: 18px;
-        font-weight: bold;
-        border: none;
-        border-radius: 12px;
-        cursor: pointer;
-    }
-
-    .spin-btn { background: linear-gradient(#ff4500, #cc3700); color: white; }
-    .autoplay-btn { background: linear-gradient(#00b300, #008000); color: white; }
-  </style>
+    <!-- Define a codificação de caracteres para suportar acentos e português -->
+    <meta charset="UTF-8">
+    
+    <!-- Configuração de visualização para dispositivos móveis (responsivo) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título que aparece na aba do navegador -->
+    <title>Calculadora de IMC</title>
+    
+    <!-- Estilos CSS internos (inline) -->
+    <style>
+        /* Define a fonte e centraliza o conteúdo */
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        
+        /* Estilo do título principal */
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        
+        /* Estilo do formulário */
+        form {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        
+        /* Estilo das labels */
+        label {
+            display: block;
+            margin: 12px 0 6px;
+            font-weight: bold;
+        }
+        
+        /* Estilo dos campos de entrada */
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        /* Estilo do botão */
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        
+        /* Efeito ao passar o mouse no botão */
+        button:hover {
+            background-color: #45a049;
+        }
+        
+        /* Área onde o resultado será exibido */
+        #resultado {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 18px;
+        }
+    </style>
 </head>
 <body>
-
-  <div class="container">
-    <div class="header">
-      <h1>🐅 JOGO DO TIGRÃO 🐅</h1>
-    </div>
-
-    <!-- Seleção de Modos -->
-    <div class="mode-selector">
-      <button class="mode-btn active" data-mode="classic">🎮 Clássico</button>
-      <button class="mode-btn" data-mode="turbo">⚡ Turbo</button>
-      <button class="mode-btn" data-mode="highroller">🔥 High Roller</button>
-    </div>
-
-    <div class="reels">
-      <div class="reel" id="reel1">🐅</div>
-      <div class="reel" id="reel2">🍒</div>
-      <div class="reel" id="reel3">⭐</div>
-    </div>
-
-    <div class="info">
-      <div>Saldo: R$ <span id="saldo">500.00</span></div>
-      <div>Aposta: R$ <span id="aposta">10.00</span> 
-           <span id="modeInfo" style="font-size:14px; color:#ffaa00;"></span>
-      </div>
-    </div>
-
-    <div class="controls">
-      <div style="display:flex; gap:8px;">
-        <button class="btn bet-btn" id="diminuir">−10</button>
-        <button class="btn bet-btn" id="aumentar">+10</button>
-      </div>
-
-      <button class="btn spin-btn" id="spinBtn">🌀 GIRAR</button>
-      <button class="btn autoplay-btn" id="autoBtn">▶ AUTO PLAY</button>
-
-      <div class="result" id="result" style="text-align:center; font-size:22px; min-height:40px;"></div>
-    </div>
-
-    <div style="text-align:center; padding:12px; background:#0f0a05;">
-      Banca: R$ <span id="banca">10000.00</span>
-    </div>
-  </div>
-
-  <script>
-    const emojis = ["🐅", "🍒", "⭐", "💎", "🔔", "🍋", "7️⃣", "🔥", "🌟", "💰"];
-
-    let saldo = 500;
-    let aposta = 10;
-    let banca = 10000;
-    let currentMode = "classic";
-
-    const reel1 = document.getElementById('reel1');
-    const reel2 = document.getElementById('reel2');
-    const reel3 = document.getElementById('reel3');
-    const reels = [reel1, reel2, reel3];
-
-    // Atualiza tela
-    function atualizarTela() {
-      document.getElementById('saldo').textContent = saldo.toFixed(2);
-      document.getElementById('aposta').textContent = aposta.toFixed(2);
-      document.getElementById('banca').textContent = banca.toFixed(2);
-    }
-
-    // Trocar Modo
-    document.querySelectorAll('.mode-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentMode = btn.dataset.mode;
+    
+    <!-- Título principal da página -->
+    <h1>Calculadora de IMC</h1>
+    
+    <!-- Formulário de entrada de dados -->
+    <form id="imcForm">
         
-        if (currentMode === "highroller") aposta = Math.max(aposta, 50);
-        atualizarTela();
-      });
-    });
+        <!-- Campo para digitar o peso -->
+        <label for="peso">Peso (kg):</label>
+        <input type="number" id="peso" step="0.1" placeholder="Exemplo: 70.5" required>
+        
+        <!-- Campo para digitar a altura -->
+        <label for="altura">Altura (metros):</label>
+        <input type="number" id="altura" step="0.01" placeholder="Exemplo: 1.75" required>
+        
+        <!-- Botão para calcular -->
+        <button type="submit">Calcular IMC</button>
+    </form>
+    
+    <!-- Div onde o resultado será mostrado dinamicamente -->
+    <div id="resultado"></div>
 
-    function ativarNeon() {
-      reels.forEach(reel => reel.classList.add('win-glow'));
-      setTimeout(() => reels.forEach(reel => reel.classList.remove('win-glow')), 3000);
-    }
+    <!-- JavaScript da página -->
+    <script>
+        // Seleciona o formulário pelo ID
+        const form = document.getElementById('imcForm');
+        
+        // Seleciona a div onde o resultado será exibido
+        const resultadoDiv = document.getElementById('resultado');
 
-    function lancarConfetes(qtd) { /* mesma função de antes */ 
-      // ... (confetes mantidos)
-    }
-
-    function girarRolos() {
-      if (saldo < aposta) return alert("Saldo insuficiente!");
-
-      reels.forEach(reel => reel.classList.add('spinning'));
-
-      setTimeout(() => {
-        const resultado = Array(3).fill().map(() => emojis[Math.floor(Math.random() * emojis.length)]);
-
-        reel1.textContent = resultado[0];
-        reel2.textContent = resultado[1];
-        reel3.textContent = resultado[2];
-
-        reels.forEach(reel => reel.classList.remove('spinning'));
-        verificarResultado(resultado);
-      }, currentMode === "turbo" ? 900 : 1400);
-    }
-
-    function verificarResultado(resultado) {
-      const tigres = resultado.filter(r => r === "🐅").length;
-      let ganho = 0;
-
-      if (tigres === 3) {
-        ganho = currentMode === "highroller" ? 
-          Math.floor(Math.random() * 8000) + 3000 : 
-          Math.floor(Math.random() * 4001) + 2000;
-        resultEl.innerHTML = `💰 JACKPOT!!! + R$ ${ganho}`;
-      } 
-      else if (tigres >= 1) {
-        ganho = currentMode === "highroller" ? 
-          Math.floor(Math.random() * 1500) + 200 : 
-          Math.floor(Math.random() * 901) + 100;
-        resultEl.innerHTML = `🎉 TIGRAÇO! + R$ ${ganho}`;
-      } 
-      else {
-        saldo -= aposta;
-        banca += aposta;
-        resultEl.textContent = "😢 Sem Tigrão...";
-        atualizarTela();
-        return;
-      }
-
-      // Vitória
-      saldo += ganho;
-      banca -= ganho;
-      ativarNeon();
-      lancarConfetes(currentMode === "highroller" ? 140 : 80);
-      atualizarTela();
-    }
-
-    // Botões
-    document.getElementById('spinBtn').addEventListener('click', girarRolos);
-    document.getElementById('aumentar').addEventListener('click', () => { if(aposta + 10 <= saldo) aposta += 10; atualizarTela(); });
-    document.getElementById('diminuir').addEventListener('click', () => { if(aposta > 10) aposta -= 10; atualizarTela(); });
-
-    atualizarTela();
-  </script>
+        // Adiciona um evento de submit no formulário
+        form.addEventListener('submit', function(e) {
+            
+            // Impede o formulário de recarregar a página
+            e.preventDefault();
+            
+            // Pega o valor do peso e converte para número decimal
+            const peso = parseFloat(document.getElementById('peso').value);
+            
+            // Pega o valor da altura e converte para número decimal
+            const altura = parseFloat(document.getElementById('altura').value);
+            
+            // Validação: verifica se os campos estão preenchidos corretamente
+            if (!peso || !altura || altura <= 0) {
+                resultadoDiv.innerHTML = '<span style="color: red; font-weight: bold;">Por favor, insira valores válidos.</span>';
+                return;
+            }
+            
+            // Calcula o IMC
+            const imc = peso / (altura * altura);
+            
+            // Determina a classificação do IMC
+            let classificacao = '';
+            if (imc < 18.5) {
+                classificacao = 'Abaixo do peso';
+            } else if (imc < 25) {
+                classificacao = 'Peso normal';
+            } else if (imc < 30) {
+                classificacao = 'Sobrepeso';
+            } else if (imc < 35) {
+                classificacao = 'Obesidade grau I';
+            } else if (imc < 40) {
+                classificacao = 'Obesidade grau II';
+            } else {
+                classificacao = 'Obesidade grau III (mórbida)';
+            }
+            
+            // Exibe o resultado na tela
+            resultadoDiv.innerHTML = `
+                <strong>Seu IMC é: ${imc.toFixed(2)}</strong><br>
+                Classificação: <strong>${classificacao}</strong>
+            `;
+        });
+    </script>
 </body>
 </html>
