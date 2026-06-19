@@ -1,168 +1,183 @@
-/* style.css - Estilos da Calculadora de IMC */
-
 /* ============================================= */
-/* ESTILOS GERAIS DA PÁGINA */
+/* style.css - IMC TECH (Fundo Preto Melhorado)  */
+/* Desenvolvido por: NEUROBYTE © 2026           */
 /* ============================================= */
 
-/* Estilo aplicado ao corpo da página */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Fundo preto puro com leve gradiente */
 body {
-    /* Define a fonte padrão para toda a página */
-    font-family: Arial, sans-serif;
-    
-    /* Largura máxima para melhor experiência em telas grandes */
-    max-width: 600px;
-    
-    /* Centraliza o conteúdo na tela */
-    margin: 50px auto;
-    
-    /* Espaçamento interno */
-    padding: 20px;
-    
-    /* Cor de fundo suave e clara */
-    background-color: #f4f4f4;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #000000;                    /* Fundo preto puro */
+    color: #e0e0ff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-/* Estilo do título principal */
+/* Efeito sutil de grid/tech no fundo */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.container {
+    background: rgba(10, 10, 15, 0.95);     /* Quase preto com transparência */
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 22px;
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 
+        0 0 50px rgba(0, 243, 255, 0.25),
+        inset 0 0 30px rgba(157, 78, 221, 0.1);
+    position: relative;
+    z-index: 2;
+}
+
 h1 {
-    /* Centraliza o texto */
     text-align: center;
-    
-    /* Cor escura para boa legibilidade */
-    color: #333;
-    
-    /* Margem inferior para separar do formulário */
-    margin-bottom: 30px;
+    font-size: 3.1rem;
+    margin-bottom: 40px;
+    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 35px rgba(0, 245, 255, 0.6);
+    letter-spacing: 5px;
 }
 
-/* ============================================= */
-/* ESTILOS DO FORMULÁRIO */
-/* ============================================= */
-
-/* Estilo do formulário como um todo */
-form {
-    /* Fundo branco para destacar o formulário */
-    background: white;
-    
-    /* Espaçamento interno */
-    padding: 30px;
-    
-    /* Cantos arredondados */
-    border-radius: 10px;
-    
-    /* Sombra suave para dar efeito de elevação */
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+.input-group {
+    margin-bottom: 24px;
 }
 
-/* Estilo das labels (textos acima dos inputs) */
 label {
-    /* Faz o label ocupar toda a largura */
     display: block;
-    
-    /* Espaçamento acima e abaixo */
-    margin: 12px 0 6px;
-    
-    /* Texto em negrito */
-    font-weight: bold;
-    
-    /* Cor do texto */
-    color: #333;
+    margin-bottom: 8px;
+    color: #00f5ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
 }
 
-/* Estilo dos campos de entrada (peso e altura) */
 input {
-    /* Ocupa 100% da largura do formulário */
     width: 100%;
-    
-    /* Espaçamento interno */
-    padding: 12px;
-    
-    /* Margem inferior */
-    margin-bottom: 18px;
-    
-    /* Borda cinza clara */
-    border: 1px solid #ccc;
-    
-    /* Cantos arredondados */
-    border-radius: 5px;
-    
-    /* Tamanho da fonte */
-    font-size: 16px;
-}
-
-/* Estilo do botão de calcular */
-button {
-    /* Ocupa toda a largura */
-    width: 100%;
-    
-    /* Espaçamento interno */
-    padding: 14px;
-    
-    /* Cor de fundo verde */
-    background-color: #4CAF50;
-    
-    /* Cor do texto */
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 2px solid rgba(0, 243, 255, 0.4);
+    border-radius: 12px;
     color: white;
-    
-    /* Remove borda padrão */
-    border: none;
-    
-    /* Cantos arredondados */
-    border-radius: 5px;
-    
-    /* Tamanho da fonte maior */
-    font-size: 18px;
-    
-    /* Mão ao passar o mouse */
-    cursor: pointer;
-    
-    /* Transição suave ao passar o mouse */
-    transition: background-color 0.3s;
+    font-size: 1.25rem;
+    transition: all 0.3s;
 }
 
-/* Efeito quando o mouse passa sobre o botão */
-button:hover {
-    /* Muda para um verde um pouco mais escuro */
-    background-color: #45a049;
+input:focus {
+    outline: none;
+    border-color: #00f5ff;
+    box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
 }
 
-/* ============================================= */
-/* ESTILOS DA ÁREA DE RESULTADO */
-/* ============================================= */
-
-/* Div onde o resultado é exibido */
-#resultado {
-    /* Margem superior para separar do formulário */
-    margin-top: 25px;
-    
-    /* Espaçamento interno */
-    padding: 20px;
-    
-    /* Cantos arredondados */
-    border-radius: 8px;
-    
-    /* Centraliza o texto */
-    text-align: center;
-    
-    /* Tamanho da fonte */
-    font-size: 18px;
-    
-    /* Negrito no texto */
+button {
+    width: 100%;
+    padding: 18px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00f5ff, #9d4edd);
+    color: #000;
+    font-size: 1.35rem;
     font-weight: bold;
-    
-    /* Borda sutil */
-    border: 1px solid #ddd;
-    
-    /* Fundo branco */
-    background-color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.4s;
+    text-transform: uppercase;
+    letter-spacing: 3px;
 }
 
-/* ============================================= */
-/* ESTILOS ADICIONAIS (MELHORIA VISUAL) */
-/* ============================================= */
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 0 40px rgba(0, 245, 255, 0.8);
+}
 
-/* Classe para mensagens de erro (usada no JavaScript) */
-.error {
-    color: #f44336;
-    background-color: #ffebee;
-    border: 1px solid #f44336;
+/* Resultado */
+#resultado {
+    margin-top: 30px;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    text-align: center;
+    font-size: 1.4rem;
+    min-height: 110px;
+    display: none;
+}
+
+#resultado.show {
+    display: block;
+    animation: glow 1.8s ease;
+}
+
+@keyframes glow {
+    0%   { box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
+    50%  { box-shadow: 0 0 35px rgba(157, 78, 221, 0.7); }
+    100% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); }
+}
+
+/* Tabela */
+.tabela-imc {
+    margin-top: 35px;
+}
+
+.tabela-imc h2 {
+    text-align: center;
+    color: #00f5ff;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 12px 10px;
+    text-align: center;
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+}
+
+th {
+    background: rgba(0, 243, 255, 0.1);
+    color: #00f5ff;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+    .container {
+        margin: 15px;
+        padding: 30px 20px;
+    }
+    h1 { font-size: 2.5rem; }
 }
