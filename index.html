@@ -1,153 +1,58 @@
-/* ============================================= */
-/* style.css - IMC TECH                          */
-/* Interface Cyberpunk / Futurista               */
-/* Desenvolvido por: NEUROBYTE © 2026           */
-/* ============================================= */
+<!DOCTYPE html>
+<!-- index.html - Calculadora de IMC com design tecnológico -->
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+<!-- Tag raiz do documento HTML -->
+<html lang="pt-BR">
+<head>
+    <!-- Define a codificação de caracteres (suporte a acentos) -->
+    <meta charset="UTF-8">
+    
+    <!-- Configuração para responsividade em celulares e tablets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <!-- Título que aparece na aba do navegador -->
+    <title>IMC TECH</title>
+    
+    <!-- Link para o arquivo de estilos externo -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- Container principal da aplicação -->
+    <div class="container">
+        
+        <!-- Título principal com estilo neon -->
+        <h1>IMC <span>TECH</span></h1>
+        
+        <!-- Formulário de entrada de dados -->
+        <form id="imcForm">
+            
+            <!-- Grupo do peso -->
+            <div class="input-group">
+                <!-- Label do campo peso -->
+                <label for="peso">PESO (KG)</label>
+                <!-- Campo de entrada para peso -->
+                <input type="number" id="peso" step="0.01" placeholder="70.5" required>
+            </div>
+            
+            <!-- Grupo da altura -->
+            <div class="input-group">
+                <!-- Label do campo altura -->
+                <label for="altura">ALTURA (METROS)</label>
+                <!-- Campo de entrada para altura -->
+                <input type="number" id="altura" step="0.01" placeholder="1.75" required>
+            </div>
+            
+            <!-- Botão de calcular -->
+            <button type="submit">CALCULAR IMC</button>
+        </form>
+        
+        <!-- Área onde o resultado será exibido dinamicamente -->
+        <div id="resultado"></div>
+        
+    </div>
 
-body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
-    background: linear-gradient(135deg, #0a0a1f 0%, #1a0033 50%, #000000 100%);
-    color: #e0e0ff;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-}
-
-/* Efeito de scanline sutil (tech) */
-body::before {
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: repeating-linear-gradient(
-        transparent 0px,
-        transparent 2px,
-        rgba(0, 243, 255, 0.03) 2px,
-        rgba(0, 243, 255, 0.03) 4px
-    );
-    pointer-events: none;
-    z-index: 1;
-}
-
-.container {
-    background: rgba(10, 10, 35, 0.85);
-    backdrop-filter: blur(16px);
-    border: 1px solid rgba(0, 243, 255, 0.25);
-    border-radius: 20px;
-    padding: 45px 40px;
-    width: 100%;
-    max-width: 520px;
-    box-shadow: 
-        0 0 40px rgba(0, 243, 255, 0.3),
-        inset 0 0 25px rgba(157, 78, 221, 0.15);
-    position: relative;
-    z-index: 2;
-}
-
-h1 {
-    text-align: center;
-    font-size: 3rem;
-    margin-bottom: 40px;
-    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 30px rgba(0, 245, 255, 0.7);
-    letter-spacing: 4px;
-    font-weight: 700;
-}
-
-.input-group {
-    margin-bottom: 24px;
-}
-
-label {
-    display: block;
-    margin-bottom: 8px;
-    color: #00f5ff;
-    font-size: 1.1rem;
-    font-weight: 600;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-}
-
-input {
-    width: 100%;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.6);
-    border: 2px solid rgba(0, 243, 255, 0.4);
-    border-radius: 12px;
-    color: #ffffff;
-    font-size: 1.25rem;
-    transition: all 0.3s ease;
-}
-
-input:focus {
-    outline: none;
-    border-color: #00f5ff;
-    box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
-}
-
-button {
-    width: 100%;
-    padding: 18px;
-    margin-top: 10px;
-    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
-    color: #000;
-    font-size: 1.35rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: all 0.4s ease;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
-}
-
-button:hover {
-    transform: translateY(-4px) scale(1.02);
-    box-shadow: 0 0 35px rgba(157, 78, 221, 0.8);
-}
-
-#resultado {
-    margin-top: 30px;
-    padding: 28px;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 12px;
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    text-align: center;
-    font-size: 1.4rem;
-    min-height: 100px;
-    display: none;
-    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
-}
-
-#resultado.show {
-    display: block;
-    animation: glow 1.5s ease-in-out;
-}
-
-@keyframes glow {
-    0% { box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
-    50% { box-shadow: 0 0 30px rgba(157, 78, 221, 0.6); }
-    100% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
-}
-
-/* Responsivo */
-@media (max-width: 480px) {
-    .container {
-        margin: 15px;
-        padding: 30px 20px;
-    }
-    h1 { font-size: 2.4rem; }
-}
+    <!-- Link para o arquivo JavaScript externo -->
+    <script src="script.js"></script>
+</body>
+</html>
