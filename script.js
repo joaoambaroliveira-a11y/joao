@@ -1,96 +1,91 @@
-// script.js - JavaScript da Calculadora de IMC
-// Este arquivo contém toda a lógica interativa da página HTML
+// script.js - Cálculo do IMC com comentários linha por linha
 
-// =============================================
-// Aguarda o carregamento completo da página
-// =============================================
+// Seleciona os elementos da página
+const form = document.getElementById('imcForm');           // Pega o formulário
+const resultadoDiv = document.getElementById('resultado'); // Pega a div onde o resultado aparece
 
-// Seleciona o formulário pelo seu ID
-const form = document.getElementById('imcForm');
-
-// Seleciona a div onde o resultado será exibido
-const resultadoDiv = document.getElementById('resultado');
-
-// Adiciona um ouvinte de evento para quando o formulário for enviado
+// Quando o usuário clicar no botão "Calcular IMC"
 form.addEventListener('submit', function(e) {
     
-    // Impede o comportamento padrão do formulário (recarregar a página)
+    // Impede a página de recarregar ao enviar o formulário
     e.preventDefault();
-    
+
     // =============================================
-    // Captura os valores digitados pelo usuário
+    // 1. CAPTURA OS VALORES DIGITADOS
     // =============================================
     
-    // Pega o valor do campo peso e converte para número decimal
+    // Pega o valor do peso e converte para número decimal
     const peso = parseFloat(document.getElementById('peso').value);
     
-    // Pega o valor do campo altura e converte para número decimal
+    // Pega o valor da altura e converte para número decimal
     const altura = parseFloat(document.getElementById('altura').value);
-    
+
     // =============================================
-    // Validação dos dados inseridos
+    // 2. VALIDAÇÃO DOS DADOS
     // =============================================
     
-    // Verifica se o peso ou altura são inválidos ou se altura é zero/negativa
+    // Se o peso ou altura estiverem vazios ou altura for inválida
     if (!peso || !altura || altura <= 0) {
-        // Mostra mensagem de erro em vermelho
         resultadoDiv.innerHTML = `
-            <span style="color: red; font-weight: bold;">
-                Por favor, insira valores válidos.
+            <span style="color: #ff4d4d; font-weight: bold;">
+                ⚠️ Por favor, insira valores válidos.
             </span>`;
-        return; // Interrompe a execução da função
+        resultadoDiv.classList.add('show');
+        return; // Para a execução aqui
     }
-    
+
     // =============================================
-    // Cálculo do IMC
+    // 3. CÁLCULO DO IMC
     // =============================================
     
-    // Calcula o IMC: peso / (altura × altura)
+    // Fórmula oficial do IMC: peso ÷ (altura × altura)
     const imc = peso / (altura * altura);
-    
+
     // =============================================
-    // Classificação do IMC conforme OMS
+    // 4. CLASSIFICAÇÃO DO IMC (OMS)
     // =============================================
     
-    let classificacao = ''; // Variável para guardar a classificação
-    
+    let classificacao = '';   // Variável que vai guardar o texto da classificação
+    let cor = '';             // Variável para mudar a cor do texto
+
     if (imc < 18.5) {
         classificacao = 'Abaixo do peso';
+        cor = '#4dabf7';      // Azul
     } 
     else if (imc < 25) {
         classificacao = 'Peso normal';
+        cor = '#51cf66';      // Verde
     } 
     else if (imc < 30) {
         classificacao = 'Sobrepeso';
+        cor = '#ffd43b';      // Amarelo
     } 
     else if (imc < 35) {
-        classificacao = 'Obesidade grau I';
+        classificacao = 'Obesidade Grau I';
+        cor = '#ff922b';      // Laranja
     } 
     else if (imc < 40) {
-        classificacao = 'Obesidade grau II';
+        classificacao = 'Obesidade Grau II';
+        cor = '#ff6b6b';      // Vermelho claro
     } 
     else {
-        classificacao = 'Obesidade grau III (mórbida)';
+        classificacao = 'Obesidade Grau III (Mórbida)';
+        cor = '#c2255c';      // Vermelho escuro
     }
-    
+
     // =============================================
-    // Exibição do resultado na tela
+    // 5. EXIBE O RESULTADO NA TELA
     // =============================================
     
-    // Insere o resultado formatado na div
     resultadoDiv.innerHTML = `
-        <strong>Seu IMC é: ${imc.toFixed(2)}</strong><br><br>
-        Classificação: <strong>${classificacao}</strong>
+        <strong style="color: #00f5ff; font-size: 1.6rem;">
+            Seu IMC: ${imc.toFixed(2)}
+        </strong><br><br>
+        <span style="color: ${cor}; font-size: 1.4rem;">
+            ${classificacao}
+        </span>
     `;
     
-    // Opcional: Adiciona cor conforme a classificação (melhora visual)
-    if (imc < 18.5) {
-        resultadoDiv.style.color = '#2196F3';        // Azul
-    } else if (imc < 25) {
-        resultadoDiv.style.color = '#4CAF50';        // Verde
-    } else if (imc < 30) {
-        resultadoDiv.style.color = '#FF9800';        // Laranja
-    } else {
-        resultadoDiv.style.color = '#f44336';        // Vermelho
-    }
+    // Mostra a div com animação
+    resultadoDiv.classList.add('show');
 });
