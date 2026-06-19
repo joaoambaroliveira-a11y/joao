@@ -1,142 +1,153 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IMC Calculator</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-  
-  <style>
-    body {
-      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-      min-height: 100vh;
+/* ============================================= */
+/* style.css - IMC TECH                          */
+/* Interface Cyberpunk / Futurista               */
+/* Desenvolvido por: NEUROBYTE © 2026           */
+/* ============================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: linear-gradient(135deg, #0a0a1f 0%, #1a0033 50%, #000000 100%);
+    color: #e0e0ff;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* Efeito de scanline sutil (tech) */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 243, 255, 0.03) 2px,
+        rgba(0, 243, 255, 0.03) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+}
+
+.container {
+    background: rgba(10, 10, 35, 0.85);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(0, 243, 255, 0.25);
+    border-radius: 20px;
+    padding: 45px 40px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 
+        0 0 40px rgba(0, 243, 255, 0.3),
+        inset 0 0 25px rgba(157, 78, 221, 0.15);
+    position: relative;
+    z-index: 2;
+}
+
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    margin-bottom: 40px;
+    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 30px rgba(0, 245, 255, 0.7);
+    letter-spacing: 4px;
+    font-weight: 700;
+}
+
+.input-group {
+    margin-bottom: 24px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #00f5ff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+input {
+    width: 100%;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.6);
+    border: 2px solid rgba(0, 243, 255, 0.4);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 1.25rem;
+    transition: all 0.3s ease;
+}
+
+input:focus {
+    outline: none;
+    border-color: #00f5ff;
+    box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+}
+
+button {
+    width: 100%;
+    padding: 18px;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
+    color: #000;
+    font-size: 1.35rem;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    box-shadow: 0 0 20px rgba(0, 245, 255, 0.5);
+}
+
+button:hover {
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 0 35px rgba(157, 78, 221, 0.8);
+}
+
+#resultado {
+    margin-top: 30px;
+    padding: 28px;
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 12px;
+    border: 1px solid rgba(0, 243, 255, 0.3);
+    text-align: center;
+    font-size: 1.4rem;
+    min-height: 100px;
+    display: none;
+    box-shadow: 0 0 20px rgba(0, 243, 255, 0.2);
+}
+
+#resultado.show {
+    display: block;
+    animation: glow 1.5s ease-in-out;
+}
+
+@keyframes glow {
+    0% { box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+    50% { box-shadow: 0 0 30px rgba(157, 78, 221, 0.6); }
+    100% { box-shadow: 0 0 20px rgba(0, 243, 255, 0.3); }
+}
+
+/* Responsivo */
+@media (max-width: 480px) {
+    .container {
+        margin: 15px;
+        padding: 30px 20px;
     }
-    .glass {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(16px);
-    }
-    .result-number {
-      font-size: 5.5rem;
-      font-weight: 800;
-      line-height: 1;
-    }
-  </style>
-</head>
-<body class="flex items-center justify-center p-6">
-  <div class="max-w-lg w-full">
-    <div class="glass rounded-3xl shadow-2xl p-10">
-      
-      <div class="text-center mb-10">
-        <div class="inline-flex items-center justify-center w-20 h-20 bg-blue-100 rounded-2xl mb-4">
-          <i class="fas fa-weight-scale text-5xl text-blue-600"></i>
-        </div>
-        <h1 class="text-4xl font-bold text-gray-800">Calculadora de IMC</h1>
-        <p class="text-gray-600 mt-2">Índice de Massa Corporal</p>
-      </div>
-
-      <div class="space-y-8">
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">PESO (kg)</label>
-          <input type="number" id="peso" 
-                 class="w-full px-6 py-5 text-3xl rounded-2xl border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none transition-all"
-                 value="70" step="0.1">
-        </div>
-
-        <div>
-          <label class="block text-sm font-semibold text-gray-700 mb-2">ALTURA (metros)</label>
-          <input type="number" id="altura" 
-                 class="w-full px-6 py-5 text-3xl rounded-2xl border border-gray-300 focus:border-blue-500 focus:ring-4 focus:ring-blue-200 outline-none transition-all"
-                 value="1.70" step="0.01">
-        </div>
-
-        <button onclick="calcularIMC()" 
-                class="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-bold text-xl py-6 rounded-2xl transition-all active:scale-95 shadow-lg">
-          CALCULAR IMC
-        </button>
-      </div>
-
-      <!-- Resultado -->
-      <div id="resultado" class="hidden mt-10 pt-8 border-t border-gray-200">
-        <div class="text-center">
-          <p class="text-gray-600 text-lg">Seu IMC é</p>
-          <div id="imc-value" class="result-number text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-purple-600"></div>
-          
-          <div id="categoria" class="mx-auto mt-4 text-xl font-semibold px-10 py-4 rounded-3xl inline-block"></div>
-          
-          <p id="mensagem" class="mt-6 text-gray-600 leading-relaxed text-center"></p>
-        </div>
-
-        <!-- Barra de referência -->
-        <div class="mt-12">
-          <p class="text-xs text-gray-500 mb-3 text-center">FAIXAS DE IMC</p>
-          <div class="relative h-5 bg-gray-200 rounded-3xl overflow-hidden">
-            <div class="absolute h-full bg-gradient-to-r from-orange-400 via-green-500 via-yellow-500 to-red-600" 
-                 style="width: 100%"></div>
-          </div>
-          <div class="flex justify-between text-xs font-medium text-gray-500 mt-2">
-            <span>18.5</span>
-            <span>25</span>
-            <span>30</span>
-            <span>40</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <p class="text-center text-white/80 text-sm mt-8">
-      Feito com ❤️ usando HTML, Tailwind CSS e JavaScript
-    </p>
-  </div>
-
-  <script>
-    function calcularIMC() {
-      const peso = parseFloat(document.getElementById('peso').value);
-      const altura = parseFloat(document.getElementById('altura').value);
-      const resultado = document.getElementById('resultado');
-
-      if (!peso || !altura || peso <= 0 || altura <= 0) {
-        alert("Por favor, preencha os campos com valores válidos.");
-        return;
-      }
-
-      const imc = (peso / (altura * altura)).toFixed(2);
-
-      let categoriaHTML = '';
-      let mensagem = '';
-
-      if (imc < 18.5) {
-        categoriaHTML = `<span class="bg-orange-500 text-white px-8 py-3 rounded-3xl">Abaixo do peso</span>`;
-        mensagem = "Você está abaixo do peso ideal. Considere consultar um nutricionista.";
-      } else if (imc < 25) {
-        categoriaHTML = `<span class="bg-green-500 text-white px-8 py-3 rounded-3xl">Peso Normal</span>`;
-        mensagem = "Parabéns! Você está com o peso ideal.";
-      } else if (imc < 30) {
-        categoriaHTML = `<span class="bg-yellow-500 text-white px-8 py-3 rounded-3xl">Sobrepeso</span>`;
-        mensagem = "Você está acima do peso. Recomenda-se melhorar hábitos alimentares.";
-      } else if (imc < 35) {
-        categoriaHTML = `<span class="bg-orange-600 text-white px-8 py-3 rounded-3xl">Obesidade Grau I</span>`;
-        mensagem = "Obesidade grau I. Busque orientação de um profissional.";
-      } else if (imc < 40) {
-        categoriaHTML = `<span class="bg-red-600 text-white px-8 py-3 rounded-3xl">Obesidade Grau II</span>`;
-        mensagem = "Obesidade grau II. Consulte um médico.";
-      } else {
-        categoriaHTML = `<span class="bg-red-700 text-white px-8 py-3 rounded-3xl">Obesidade Grau III</span>`;
-        mensagem = "Obesidade grau III (mórbida). Procure ajuda médica imediatamente.";
-      }
-
-      document.getElementById('imc-value').textContent = imc;
-      document.getElementById('categoria').innerHTML = categoriaHTML;
-      document.getElementById('mensagem').textContent = mensagem;
-
-      resultado.classList.remove('hidden');
-      resultado.scrollIntoView({ behavior: "smooth" });
-    }
-
-    // Calcular ao pressionar Enter
-    document.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") calcularIMC();
-    });
-  </script>
-</body>
-</html>
+    h1 { font-size: 2.4rem; }
+}
