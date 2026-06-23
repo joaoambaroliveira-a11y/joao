@@ -1,47 +1,55 @@
-<!DOCTYPE html>
-<!-- index.html - Calculadora de IMC Tech (Altura em CM + Tabela) -->
+<!DOCTYPE html>                    <!-- Declara o tipo de documento HTML5 -->
+<!-- index.html - Calculadora de IMC Tech -->
+<html lang="pt-BR">                <!-- Define o idioma da página como Português do Brasil -->
 
-<html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IMC TECH</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    
+<head>                             <!-- Início da seção de cabeçalho -->
+    <meta charset="UTF-8">         <!-- Define a codificação de caracteres para suportar acentos -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- Torna a página responsiva -->
+    <title>IMC TECH</title>        <!-- Título que aparece na aba do navegador -->
+    <link rel="stylesheet" href="style.css"> <!-- Linka o arquivo CSS externo -->
+</head>                            <!-- Fim do cabeçalho -->
+
+<body>                             <!-- Início do corpo da página -->
+
+    <!-- Container principal que centraliza o conteúdo -->
     <div class="container">
+        
+        <!-- Título principal da aplicação -->
         <h1>IMC <span>TECH</span></h1>
         
+        <!-- Formulário para entrada de dados -->
         <form id="imcForm">
+            
+            <!-- Grupo do campo de peso -->
             <div class="input-group">
-                <label for="peso">PESO (KG)</label>
-                <input type="number" id="peso" step="0.1" placeholder="70.5" required>
+                <label for="peso">PESO (KG)</label>           <!-- Label do peso -->
+                <input type="number" id="peso" step="0.1" placeholder="70.5" required> <!-- Campo peso -->
             </div>
             
+            <!-- Grupo do campo de altura -->
             <div class="input-group">
-                <!-- Alterado para centímetros -->
-                <label for="altura">ALTURA (CM)</label>
-                <input type="number" id="altura" step="0.1" placeholder="175" required>
+                <label for="altura">ALTURA (CM)</label>       <!-- Label da altura -->
+                <input type="number" id="altura" step="0.1" placeholder="175" required> <!-- Campo altura em CM -->
             </div>
             
+            <!-- Botão para realizar o cálculo -->
             <button type="submit">CALCULAR IMC</button>
         </form>
         
-        <!-- Área do resultado -->
+        <!-- Div onde o resultado será exibido pelo JavaScript -->
         <div id="resultado"></div>
 
-        <!-- Tabela de classificação de IMC -->
+        <!-- Seção da tabela de classificação -->
         <div class="tabela-imc">
-            <h2>Tabela de Classificação IMC</h2>
-            <table>
-                <thead>
+            <h2>Tabela de Classificação IMC</h2>           <!-- Título da tabela -->
+            <table>                                        <!-- Início da tabela -->
+                <thead>                                    <!-- Cabeçalho da tabela -->
                     <tr>
                         <th>IMC</th>
                         <th>Classificação</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody>                                    <!-- Corpo da tabela -->
                     <tr><td>Abaixo de 18.5</td><td>Abaixo do peso</td></tr>
                     <tr><td>18.5 – 24.9</td><td>Peso normal</td></tr>
                     <tr><td>25.0 – 29.9</td><td>Sobrepeso</td></tr>
@@ -51,8 +59,10 @@
                 </tbody>
             </table>
         </div>
+        
     </div>
 
+    <!-- Link para o arquivo JavaScript -->
     <script src="script.js"></script>
-</body>
-</html>
+</body>                            <!-- Fim do corpo -->
+</html>                            <!-- Fim do documento HTML -->
