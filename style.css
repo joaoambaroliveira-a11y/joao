@@ -1,158 +1,189 @@
 /* ============================================= */
-/* style.css - IMC TECH com fundo preto */
+/* style.css - Calculadora de IMC TECH           */
+/* Fundo preto + estilo tecnológico              */
 /* ============================================= */
 
-* {                                /* Aplica a todos os elementos */
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+* {                                /* Seletor universal - aplica a todos os elementos da página */
+    margin: 0;                     /* Remove margens padrão */
+    padding: 0;                    /* Remove espaçamentos padrão */
+    box-sizing: border-box;        /* Faz com que padding e border sejam incluídos na largura */
 }
 
-body {                             /* Estilo do corpo da página */
-    font-family: 'Segoe UI', system-ui, sans-serif;
+/* ============================================= */
+/* ESTILOS DO BODY (fundo da página)             */
+/* ============================================= */
+
+body {                             /* Estilo aplicado ao corpo da página inteira */
+    font-family: 'Segoe UI', system-ui, sans-serif; /* Define a fonte principal */
     background: #000000;           /* Fundo preto puro */
-    color: #e0e0ff;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    color: #e0e0ff;                /* Cor padrão do texto (tom claro) */
+    min-height: 100vh;             /* Garante que ocupe no mínimo 100% da altura da tela */
+    display: flex;                 /* Usa flexbox para centralizar conteúdo */
+    align-items: center;           /* Centraliza verticalmente */
+    justify-content: center;       /* Centraliza horizontalmente */
 }
 
-body::before {                     /* Efeito de grade tecnológica no fundo */
-    content: '';
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
-    background-size: 50px 50px;
-    pointer-events: none;
-    z-index: 1;
+/* Efeito de grade tecnológica sutil no fundo */
+body::before {                     /* Pseudo-elemento antes do body */
+    content: '';                   /* Necessário para pseudo-elementos */
+    position: fixed;               /* Fixa no viewport */
+    top: 0;                        /* Posição do topo */
+    left: 0;                       /* Posição da esquerda */
+    width: 100%;                   /* Largura total */
+    height: 100%;                  /* Altura total */
+    background: 
+        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px), /* Linhas horizontais */
+        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px); /* Linhas verticais */
+    background-size: 50px 50px;    /* Tamanho do padrão da grade */
+    pointer-events: none;          /* Não interfere nos cliques */
+    z-index: 1;                    /* Fica atrás do conteúdo */
 }
 
-.container {                       /* Container principal */
-    background: rgba(10, 10, 15, 0.95);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(0, 243, 255, 0.25);
-    border-radius: 22px;
-    padding: 45px 40px;
-    width: 100%;
-    max-width: 520px;
-    box-shadow: 0 0 50px rgba(0, 243, 255, 0.25);
-    position: relative;
-    z-index: 2;
+/* ============================================= */
+/* CONTAINER PRINCIPAL                           */
+/* ============================================= */
+
+.container {                       /* Caixa central que contém tudo */
+    background: rgba(10, 10, 15, 0.95); /* Fundo quase preto com leve transparência */
+    backdrop-filter: blur(12px);   /* Efeito de desfoque no fundo (glassmorphism) */
+    border: 1px solid rgba(0, 243, 255, 0.25); /* Borda neon azul */
+    border-radius: 22px;           /* Cantos arredondados */
+    padding: 45px 40px;            /* Espaçamento interno */
+    width: 100%;                   /* Ocupa toda largura disponível */
+    max-width: 520px;              /* Largura máxima */
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.25); /* Sombra neon */
+    position: relative;            /* Necessário para z-index */
+    z-index: 2;                    /* Fica na frente do efeito de grade */
 }
 
-h1 {                               /* Título principal com efeito neon */
-    text-align: center;
-    font-size: 3.1rem;
-    margin-bottom: 40px;
-    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    text-shadow: 0 0 35px rgba(0, 245, 255, 0.6);
+/* ============================================= */
+/* TÍTULO PRINCIPAL                              */
+/* ============================================= */
+
+h1 {                               /* Estilo do título "IMC TECH" */
+    text-align: center;            /* Centraliza o texto */
+    font-size: 3.1rem;             /* Tamanho grande */
+    margin-bottom: 40px;           /* Espaço abaixo */
+    background: linear-gradient(90deg, #00f5ff, #9d4edd, #ff00ff); /* Gradiente neon */
+    -webkit-background-clip: text; /* Aplica o gradiente no texto */
+    -webkit-text-fill-color: transparent; /* Torna o texto transparente para mostrar gradiente */
+    text-shadow: 0 0 35px rgba(0, 245, 255, 0.6); /* Brilho neon */
 }
 
-.input-group {                     /* Espaçamento entre os campos */
-    margin-bottom: 24px;
+/* ============================================= */
+/* CAMPOS DE ENTRADA                             */
+/* ============================================= */
+
+.input-group {                     /* Agrupamento de cada campo (peso e altura) */
+    margin-bottom: 24px;           /* Espaço entre os grupos */
 }
 
-label {                            /* Estilo das labels */
-    display: block;
-    margin-bottom: 8px;
-    color: #00f5ff;
-    font-size: 1.1rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 2px;
+label {                            /* Estilo das labels (PESO e ALTURA) */
+    display: block;                /* Ocupa linha inteira */
+    margin-bottom: 8px;            /* Espaço abaixo da label */
+    color: #00f5ff;                /* Cor neon azul */
+    font-size: 1.1rem;             /* Tamanho da fonte */
+    font-weight: 600;              /* Texto em negrito */
+    text-transform: uppercase;     /* Deixa em maiúsculas */
+    letter-spacing: 2px;           /* Espaçamento entre letras */
 }
 
-input {                            /* Estilo dos campos de entrada */
-    width: 100%;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.7);
-    border: 2px solid rgba(0, 243, 255, 0.4);
-    border-radius: 12px;
-    color: white;
-    font-size: 1.25rem;
+input {                            /* Estilo dos campos de input */
+    width: 100%;                   /* Ocupa toda largura */
+    padding: 16px;                 /* Espaçamento interno */
+    background: rgba(0, 0, 0, 0.7); /* Fundo escuro */
+    border: 2px solid rgba(0, 243, 255, 0.4); /* Borda neon */
+    border-radius: 12px;           /* Cantos arredondados */
+    color: white;                  /* Cor do texto digitado */
+    font-size: 1.25rem;            /* Tamanho da fonte */
 }
 
-input:focus {                      /* Quando o campo está selecionado */
-    outline: none;
-    border-color: #00f5ff;
-    box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
+input:focus {                      /* Quando o usuário clica no campo */
+    outline: none;                 /* Remove contorno padrão */
+    border-color: #00f5ff;         /* Borda mais forte */
+    box-shadow: 0 0 25px rgba(0, 245, 255, 0.6); /* Brilho ao focar */
 }
 
-button {                           /* Estilo do botão */
-    width: 100%;
-    padding: 18px;
-    margin-top: 10px;
-    background: linear-gradient(90deg, #00f5ff, #9d4edd);
-    color: #000;
-    font-size: 1.35rem;
-    font-weight: bold;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    text-transform: uppercase;
-    letter-spacing: 3px;
+/* ============================================= */
+/* BOTÃO                                         */
+/* ============================================= */
+
+button {                           /* Estilo do botão "CALCULAR IMC" */
+    width: 100%;                   /* Largura total */
+    padding: 18px;                 /* Espaçamento interno */
+    margin-top: 10px;              /* Espaço acima */
+    background: linear-gradient(90deg, #00f5ff, #9d4edd); /* Gradiente neon */
+    color: #000;                   /* Texto preto */
+    font-size: 1.35rem;            /* Tamanho da fonte */
+    font-weight: bold;             /* Negrito */
+    border: none;                  /* Sem borda */
+    border-radius: 12px;           /* Cantos arredondados */
+    cursor: pointer;               /* Mão do mouse */
+    text-transform: uppercase;     /* Maiúsculas */
+    letter-spacing: 3px;           /* Espaçamento entre letras */
 }
 
-button:hover {                     /* Efeito ao passar o mouse */
-    transform: translateY(-4px);
-    box-shadow: 0 0 40px rgba(0, 245, 255, 0.8);
+button:hover {                     /* Efeito quando mouse passa por cima */
+    transform: translateY(-4px);   /* Levanta o botão */
+    box-shadow: 0 0 40px rgba(0, 245, 255, 0.8); /* Brilho forte */
 }
 
-#resultado {                       /* Área do resultado */
-    margin-top: 30px;
-    padding: 28px;
-    background: rgba(0, 0, 0, 0.6);
-    border-radius: 12px;
-    border: 1px solid rgba(0, 243, 255, 0.3);
-    text-align: center;
-    font-size: 1.4rem;
-    min-height: 110px;
-    display: none;
+/* ============================================= */
+/* RESULTADO                                     */
+/* ============================================= */
+
+#resultado {                       /* Área onde aparece o resultado */
+    margin-top: 30px;              /* Espaço acima */
+    padding: 28px;                 /* Espaçamento interno */
+    background: rgba(0, 0, 0, 0.6); /* Fundo escuro */
+    border-radius: 12px;           /* Cantos arredondados */
+    border: 1px solid rgba(0, 243, 255, 0.3); /* Borda neon sutil */
+    text-align: center;            /* Texto centralizado */
+    font-size: 1.4rem;             /* Tamanho da fonte */
+    min-height: 110px;             /* Altura mínima */
+    display: none;                 /* Começa escondido */
 }
 
-#resultado.show {                  /* Classe adicionada pelo JS */
-    display: block;
-    animation: glow 1.8s ease;
+#resultado.show {                  /* Classe adicionada pelo JavaScript */
+    display: block;                /* Mostra o resultado */
+    animation: glow 1.8s ease;     /* Aplica animação */
 }
 
-@keyframes glow {                  /* Animação de brilho */
+@keyframes glow {                  /* Animação de brilho no resultado */
     0%   { box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
     50%  { box-shadow: 0 0 35px rgba(157, 78, 221, 0.7); }
     100% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); }
 }
 
-.tabela-imc {                      /* Seção da tabela */
-    margin-top: 35px;
+/* ============================================= */
+/* TABELA DE CLASSIFICAÇÃO                       */
+/* ============================================= */
+
+.tabela-imc {                      /* Container da tabela */
+    margin-top: 35px;              /* Espaço acima da tabela */
 }
 
-.tabela-imc h2 {
-    text-align: center;
-    color: #00f5ff;
-    margin-bottom: 15px;
+.tabela-imc h2 {                   /* Título da tabela */
+    text-align: center;            /* Centralizado */
+    color: #00f5ff;                /* Cor neon */
+    margin-bottom: 15px;           /* Espaço abaixo */
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: rgba(0, 0, 0, 0.5);
-    border-radius: 10px;
-    overflow: hidden;
+table {                            /* Estilo da tabela */
+    width: 100%;                   /* Largura total */
+    border-collapse: collapse;     /* Remove espaço entre células */
+    background: rgba(0, 0, 0, 0.5); /* Fundo escuro */
+    border-radius: 10px;           /* Cantos arredondados */
+    overflow: hidden;              /* Esconde overflow */
 }
 
-th, td {
-    padding: 12px 10px;
-    text-align: center;
-    border-bottom: 1px solid rgba(0, 243, 255, 0.2);
+th, td {                           /* Células do cabeçalho e corpo */
+    padding: 12px 10px;            /* Espaçamento interno */
+    text-align: center;            /* Texto centralizado */
+    border-bottom: 1px solid rgba(0, 243, 255, 0.2); /* Linha separadora */
 }
 
-th {
-    background: rgba(0, 243, 255, 0.1);
-    color: #00f5ff;
+th {                               /* Cabeçalho da tabela */
+    background: rgba(0, 243, 255, 0.1); /* Fundo sutil */
+    color: #00f5ff;                /* Texto neon */
 }
