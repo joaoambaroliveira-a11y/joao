@@ -1,20 +1,23 @@
 // =============================================
-// script.js - Calculadora de IMC (Altura em CM)
+// script.js - Calculadora de IMC Tech
 // =============================================
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function() {  // Aguarda a página carregar completamente
 
-    const form = document.getElementById('imcForm');
-    const resultadoDiv = document.getElementById('resultado');
+    // Seleção dos elementos HTML
+    const form = document.getElementById('imcForm');           // Seleciona o formulário
+    const resultadoDiv = document.getElementById('resultado'); // Seleciona a div do resultado
 
+    // Evento quando o formulário é enviado
     form.addEventListener('submit', function(e) {
-        e.preventDefault();
+        
+        e.preventDefault();                                    // Evita recarregar a página
 
-        // Captura os valores
+        // Captura os valores digitados
         const peso = parseFloat(document.getElementById('peso').value);
         const alturaCm = parseFloat(document.getElementById('altura').value);
 
-        // ====================== VALIDAÇÃO ======================
+        // Validação dos campos
         if (!peso || !alturaCm || alturaCm <= 0) {
             resultadoDiv.innerHTML = `
                 <span style="color: #ff4d4d; font-weight: bold;">
@@ -24,14 +27,13 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // ====================== CONVERSÃO E CÁLCULO ======================
-        // Converte altura de centímetros para metros
+        // Converte altura de CM para metros
         const alturaMetros = alturaCm / 100;
         
-        // Calcula o IMC
+        // Cálculo do IMC
         const imc = peso / (alturaMetros * alturaMetros);
 
-        // ====================== CLASSIFICAÇÃO ======================
+        // Classificação do IMC
         let classificacao = '';
         let cor = '';
 
@@ -55,7 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
             cor = '#c2255c';
         }
 
-        // ====================== EXIBE RESULTADO ======================
+        // Exibe o resultado na tela
         resultadoDiv.innerHTML = `
             <strong style="color: #00f5ff; font-size: 1.8rem;">
                 Seu IMC: ${imc.toFixed(2)}
@@ -65,6 +67,6 @@ document.addEventListener('DOMContentLoaded', function() {
             </span>
         `;
 
-        resultadoDiv.classList.add('show');
+        resultadoDiv.classList.add('show');   // Mostra o resultado com animação
     });
 });
