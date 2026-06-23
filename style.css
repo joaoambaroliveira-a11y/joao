@@ -1,18 +1,16 @@
 /* ============================================= */
-/* style.css - IMC TECH (Fundo Preto Melhorado)  */
-/* Desenvolvido por: NEUROBYTE © 2026           */
+/* style.css - IMC TECH com fundo preto */
 /* ============================================= */
 
-* {
+* {                                /* Aplica a todos os elementos */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Fundo preto puro com leve gradiente */
-body {
+body {                             /* Estilo do corpo da página */
     font-family: 'Segoe UI', system-ui, sans-serif;
-    background: #000000;                    /* Fundo preto puro */
+    background: #000000;           /* Fundo preto puro */
     color: #e0e0ff;
     min-height: 100vh;
     display: flex;
@@ -20,38 +18,34 @@ body {
     justify-content: center;
 }
 
-/* Efeito sutil de grid/tech no fundo */
-body::before {
+body::before {                     /* Efeito de grade tecnológica no fundo */
     content: '';
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: 
-        linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+    background: linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
     background-size: 50px 50px;
     pointer-events: none;
     z-index: 1;
 }
 
-.container {
-    background: rgba(10, 10, 15, 0.95);     /* Quase preto com transparência */
+.container {                       /* Container principal */
+    background: rgba(10, 10, 15, 0.95);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(0, 243, 255, 0.25);
     border-radius: 22px;
     padding: 45px 40px;
     width: 100%;
     max-width: 520px;
-    box-shadow: 
-        0 0 50px rgba(0, 243, 255, 0.25),
-        inset 0 0 30px rgba(157, 78, 221, 0.1);
+    box-shadow: 0 0 50px rgba(0, 243, 255, 0.25);
     position: relative;
     z-index: 2;
 }
 
-h1 {
+h1 {                               /* Título principal com efeito neon */
     text-align: center;
     font-size: 3.1rem;
     margin-bottom: 40px;
@@ -59,24 +53,23 @@ h1 {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     text-shadow: 0 0 35px rgba(0, 245, 255, 0.6);
-    letter-spacing: 5px;
 }
 
-.input-group {
+.input-group {                     /* Espaçamento entre os campos */
     margin-bottom: 24px;
 }
 
-label {
+label {                            /* Estilo das labels */
     display: block;
     margin-bottom: 8px;
     color: #00f5ff;
     font-size: 1.1rem;
     font-weight: 600;
-    letter-spacing: 2px;
     text-transform: uppercase;
+    letter-spacing: 2px;
 }
 
-input {
+input {                            /* Estilo dos campos de entrada */
     width: 100%;
     padding: 16px;
     background: rgba(0, 0, 0, 0.7);
@@ -84,16 +77,15 @@ input {
     border-radius: 12px;
     color: white;
     font-size: 1.25rem;
-    transition: all 0.3s;
 }
 
-input:focus {
+input:focus {                      /* Quando o campo está selecionado */
     outline: none;
     border-color: #00f5ff;
     box-shadow: 0 0 25px rgba(0, 245, 255, 0.6);
 }
 
-button {
+button {                           /* Estilo do botão */
     width: 100%;
     padding: 18px;
     margin-top: 10px;
@@ -104,18 +96,16 @@ button {
     border: none;
     border-radius: 12px;
     cursor: pointer;
-    transition: all 0.4s;
     text-transform: uppercase;
     letter-spacing: 3px;
 }
 
-button:hover {
+button:hover {                     /* Efeito ao passar o mouse */
     transform: translateY(-4px);
     box-shadow: 0 0 40px rgba(0, 245, 255, 0.8);
 }
 
-/* Resultado */
-#resultado {
+#resultado {                       /* Área do resultado */
     margin-top: 30px;
     padding: 28px;
     background: rgba(0, 0, 0, 0.6);
@@ -127,19 +117,18 @@ button:hover {
     display: none;
 }
 
-#resultado.show {
+#resultado.show {                  /* Classe adicionada pelo JS */
     display: block;
     animation: glow 1.8s ease;
 }
 
-@keyframes glow {
+@keyframes glow {                  /* Animação de brilho */
     0%   { box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
     50%  { box-shadow: 0 0 35px rgba(157, 78, 221, 0.7); }
     100% { box-shadow: 0 0 25px rgba(0, 243, 255, 0.4); }
 }
 
-/* Tabela */
-.tabela-imc {
+.tabela-imc {                      /* Seção da tabela */
     margin-top: 35px;
 }
 
@@ -147,7 +136,6 @@ button:hover {
     text-align: center;
     color: #00f5ff;
     margin-bottom: 15px;
-    font-size: 1.4rem;
 }
 
 table {
@@ -167,17 +155,4 @@ th, td {
 th {
     background: rgba(0, 243, 255, 0.1);
     color: #00f5ff;
-}
-
-tr:last-child td {
-    border-bottom: none;
-}
-
-/* Responsivo */
-@media (max-width: 480px) {
-    .container {
-        margin: 15px;
-        padding: 30px 20px;
-    }
-    h1 { font-size: 2.5rem; }
 }
